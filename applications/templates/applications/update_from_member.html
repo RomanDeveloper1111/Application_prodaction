@@ -1,0 +1,104 @@
+{% extends "applications/layout/basic.html" %}
+{% load bootstrap4 %}
+
+{% block title %} Обновление записи {% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <table class="table table-borderless table-sm align-middle mb-0">
+                <tbody>
+                    <tr >
+                        <td class=" pr-3 pt-0">
+                            <h3>Заявка: {{app.type.name}}</h3>
+                        </td>
+                        <td class=" pr-3 pt-0">
+                            <h3>Город: {{ app.city }}</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=" pr-3 pt-0">
+                            <h3>Котнактные данные: {{ app.contact_details }}</h3>
+                        </td>
+                        <td class=" pr-3 pt-0">
+                            <h3>Название фирмы: {{ app.name_firm }}</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=" pr-3 pt-0">
+                            <h3>Коммерсант: {{ app.user_manager }}</h3>
+                        </td>
+                        <td class=" pr-3 pt-0">
+                            <h3>Процент оплаты: {{ percent_payment }}%</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=" pr-3 pt-0">
+                            <h3>Стоимость: {{ app.full_cost }}</h3>
+                        </td>
+                        <td class=" pr-3 pt-0">
+                            <h3>Оплачено: {{ app.paid }}</h3>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+
+            <div class="accordion" id="accordionExample{{app.pk}}">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne{{app.pk}}">
+                        <button class="accordion-button" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseOne{{app.pk}}" aria-expanded="true" aria-controls="collapseOne{{app.pk}}">
+                            Фирма: {{app.name_firm}} | Город: {{app.city}} | Коммерс: {{app.user_manager}}
+                        </button>
+                    </h2>
+                    <div id="collapseOne{{app.pk}}" class="accordion-collapse collapse show" aria-labelledby="headingOne{{app.pk}}" data-mdb-parent="#accordionExample{{app.pk}}">
+                        <div class="accordion-body">
+                            <div style="    display: flex; justify-content: space-between;">
+                                <p>Прошу <span class="text-danger">{{app.type.name}}</span> следующее оборудование:</p>
+
+                            </div>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Наименование</th>
+                                        <th>Номер</th>
+                                        <th>Кол-во</th>
+                                        <th>К дате:</th>
+                                        <th>Примечание</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for content in app.content_set.all %}
+                                        <tr>
+                                            <td>{{content.name}}</td>
+                                            <td>{{content.text_number}}</td>
+                                            <td>{{content.quantity}}</td>
+                                            <td>{{content.date}}</td>
+                                            <td>{{content.note}}</td>
+                                            <td></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% block member %}
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="d-flex justify-content-end mt-2">
+                        <a href="{% url 'applications:return_to_manager' app.pk%}" class="btn btn-danger ml-2">Брак</a>
+                        <button class="btn btn-success ml-2" type="submit">Одобрить</button>
+                    </div>
+                </form>
+            {% endblock %}
+
+        </div>
+    </div>
+
+{% endblock %}

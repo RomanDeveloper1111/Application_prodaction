@@ -1,0 +1,28 @@
+{% extends "applications/layout/basic.html" %}
+
+{% block title %} Авторизация {% endblock %}
+{% load bootstrap4 %}
+
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div  class="col-6 ">
+            {% if user.is_authenticated %}
+                <p>Вы уже выполнили вход.</p>
+            {% else %}
+                <form method="post" class="align-items-center mt-5" style="display: flex; flex-direction: column;">
+                    <h2>Авторизация</h2>
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                    <button class="btn btn-success mt-2 w-50" type="submit">Войти</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

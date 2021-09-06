@@ -1,0 +1,20 @@
+{% extends 'applications/layout/basic.html' %}
+
+
+{% block title %} Удаление {% endblock %}
+
+{% block bar %}
+    <div style="display: grid;justify-content: end;">
+        <h1 class="text-uppercase">Удаление <span class="text-danger">{{content.name}}</span></h1>
+        <h4>Номер: {{content.note}}</h4>
+        <h4>Кол-во: {{content.quantity}}</h4>
+        <h4>Сроки: {{content.date}}</h4>
+        <h4>Примечание: {{content.note}}</h4>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger mt-5">Подтвердить удаление</button>
+            <a href="{% url 'applications:apps' %}" class="btn btn-primary">Отмена</a>
+        </form>
+
+    </div>
+{% endblock %}

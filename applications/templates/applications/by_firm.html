@@ -1,0 +1,49 @@
+{% extends "applications/layout/basic.html" %}
+
+{% block title %} Заявки по городу {% endblock %}
+
+{% block body %}
+    {% for app in apps %}
+        <div class="accordion" id="accordionExample{{app.pk}}">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne{{app.pk}}">
+                            <button class="accordion-button p-2" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseOne{{app.pk}}" aria-expanded="true" aria-controls="collapseOne{{app.pk}}">
+                                Фирма: {{app.name_firm}} | Город: {{app.city}} | Коммерс: {{app.user_manager}} | Дата создания: {{app.published}}
+                            </button>
+                        </h2>
+                        <div id="collapseOne{{app.pk}}" class="accordion-collapse collapse hide" aria-labelledby="headingOne{{app.pk}}" data-mdb-parent="#accordionExample{{app.pk}}">
+                            <div class="accordion-body">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <p>Прошу <span class="text-danger">{{app.type.name}}</span> следующее оборудование:</p>
+
+                                </div>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Наименование</th>
+                                            <th>Номер</th>
+                                            <th>Кол-во</th>
+                                            <th>К дате:</th>
+                                            <th>Примечание</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for content in app.content_set.all %}
+                                            <tr>
+                                                <td>{{content.name}}</td>
+                                                <td>{{content.text_number}}</td>
+                                                <td>{{content.quantity}}</td>
+                                                <td>{{content.date}}</td>
+                                                <td>{{content.note}}</td>
+                                                <td></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "applications/layout/basic.html" %}
+{% load bootstrap4 %}
+
+{% block title %} Обновление заявки {% endblock %}
+
+{% block content %}
+    <form method="post">
+        <h1>Статус: {{status}}</h1>
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <a href="{% url 'applications:apps' %}" class="btn btn-danger" >Отмена</a>
+        <button class="btn btn-success" type="submit">Сохранить</button>
+    </form>
+{% endblock %}

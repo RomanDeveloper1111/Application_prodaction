@@ -1,0 +1,24 @@
+{% extends 'applications/layout/basic.html' %}
+{% load bootstrap4 %}
+
+{% block title %} Добавление контента {% endblock %}
+
+
+
+
+
+
+{% block content %}
+    <form method="post">
+        <div class="row m-2">
+            <h1 class="mb-4">{{name_operation}} Оборудования</h1>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <div class="w-100" style="display: flex;">
+                <a href="{% url 'applications:apps' %}" type="button" class="btn btn-secondary w-50 m-1">Вернуться к заявкам</a>
+                <button class="btn btn-success w-50 m-1">{{action_operation}}</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

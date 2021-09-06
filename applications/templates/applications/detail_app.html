@@ -1,0 +1,47 @@
+{% extends "applications/update_from_member.html" %}
+
+{% block title %} Просмотр заявки {% endblock %}
+
+{% block member %}
+
+<div class="d-flex justify-content-between mt-2 w-100 " >
+    <div class="form-outline w-100 bg-light ">
+        <textarea class="form-control" readonly id="textAreaExample" rows="3">{{app.note_mistake}}</textarea>
+        <label class="form-label" for="textAreaExample"><span class="text-danger">Замечания по текущей заявке:</span></label>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between">
+
+    {% if group.name == 'Администрация' or group.name == 'Коммерция директора'  %}
+        {% if app.user_manager.pk != app.boss.pk %}
+            <a  href="{% url 'applications:return_to_manager' app.pk %}"  type="button"
+                                        class="m-2"><button class="btn btn-warning">Отправить менеджеру </button></a>
+        {% endif %}
+    {% endif %}
+
+    {% if app.type.name == 'Отгрузка' %}
+        <a  href="{% url 'applications:edit_app' 'second' app.pk %}"  type="button"
+                                        class="m-2"><button class="btn btn-secondary">Перейти к редактированию заявки</button></a>
+    {% else %}
+        <a  href="{% url 'applications:edit_app' 'first' app.pk %}"  type="button"
+                                        class="m-2"><button class="btn btn-secondary">Перейти к редактированию заявки</button></a>
+    {% endif %}
+    <a  href="{% url 'applications:set_ready' app.pk %}"  type="button"
+                                        class="m-2"><button class="btn btn-success">Установить статус готово</button></a>
+
+    <a  href="{% url 'applications:apps'  %}"  type="button"
+                                        class="m-2"><button class="btn btn-primary">Вернуться на главную</button></a>
+
+    <a  href="{% url 'applications:delete_app' app.pk %}"  type="button"
+                                        class="m-2"><button class="btn btn-danger">Удалить заявку</button></a>
+
+
+</div>
+
+<style>
+    h3 {
+        margin-bottom: 0px !important;
+    }
+</style>
+{% endblock %}

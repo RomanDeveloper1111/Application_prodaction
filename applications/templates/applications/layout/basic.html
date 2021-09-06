@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} Главная {% endblock %}</title>
+    {% load static %}
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_jquery jquery=True%}
+
+    <link rel="stylesheet" href="{% static 'applications/css/product.css' %}">
+
+    <link rel="stylesheet" href="{% static 'applications/MDB/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'applications/MDB/css/mdb.min.css' %}">
+
+</head>
+<body class="h-100">
+
+
+<header class="site-header sticky-top py-1">
+        <nav class="container d-flex flex-column flex-md-row justify-content-around" style="align-items: center;">
+            <a href="{% url 'applications:apps' %}">Заявки</a>
+            {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры' %}
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-mdb-toggle="dropdown"
+                            aria-expanded="false">
+                    Добавить заявку
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+                      <li><a class="dropdown-item" href="{% url 'applications:addApp' 'first' %}">Основная заявка</a></li>
+                      <li><a class="dropdown-item" href="{% url 'applications:addApp' 'second' %}">Заявка на отгрузку</a></li>
+                    </ul>
+                </div>
+            {% endif %}
+            {% if group.name == 'Начальники производства' or group.name == 'Администрация' %}
+                <a href="{% url 'applications:apps' %}">Выбор приложения</a>
+            {% endif %}
+
+            <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-mdb-toggle="dropdown"
+                            aria-expanded="false">
+                    Здравствуйте, {{user.first_name}}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
+                      <li><a class="dropdown-item" href="{% url 'applications:app_done' %}">Отгруженные заявки</a></li>
+                    </ul>
+                </div>
+
+
+
+            <a href="{% url 'applications:logout' %}" class="text-danger">Выйти</a>
+        </nav>
+    </header>
+
+{% block body %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-7 mt-5" >
+                {% block bar %}
+                    {% for app in apps %}
+
+                        <div class="accordion" id="accordionExample{{app.pk}}">
+                            <div class="accordion-item">
+                              <h2 class="accordion-header" id="headingOne{{app.pk}}">
+
+                                  {% if app.status.name == 'Коммерция директор отказ' or app.status.name == 'Бух отказ' or app.status.name == 'ОТК отказ' %}
+                                    <button style="background-color: #ff00007a; color: black;" class="accordion-button" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseOne{{app.pk}}" aria-expanded="true" aria-controls="collapseOne{{app.pk}}">
+                                        Фирма: {{app.name_firm}} | Город: {{app.city}} | Коммерс: {{app.user_manager}}
+                                    </button>
+                                  {% elif app.status.name == 'ОТК частичная готовность' %}
+                                    <button style="background-color: #ffa500ab; color: black;" class="accordion-button" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseOne{{app.pk}}" aria-expanded="true" aria-controls="collapseOne{{app.pk}}">
+                                        Фирма: {{app.name_firm}} | Город: {{app.city}} | Коммерс: {{app.user_manager}}
+                                    </button>
+                                  {% elif app.status.name == 'Бух готово' or app.status.name == 'ОТК готово' %}
+                                    <button style="background-color: #0ac80a9e; color: black;" class="accordion-button" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseOne{{app.pk}}" aria-expanded="true" aria-controls="collapseOne{{app.pk}}">
+                                        Фирма: {{app.name_firm}} | Город: {{app.city}} | Коммерс: {{app.user_manager}}
+                                    </button>
+                                  {% else %}
+                                    <button class="accordion-button" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseOne{{app.pk}}" aria-expanded="true" aria-controls="collapseOne{{app.pk}}">
+                                        Фирма: {{app.name_firm}} | Город: {{app.city}} | Коммерс: {{app.user_manager}}
+                                    </button>
+                                  {% endif %}
+
+                              </h2>
+                              <div id="collapseOne{{app.pk}}" class="accordion-collapse collapse hide" aria-labelledby="headingOne{{app.pk}}" data-mdb-parent="#accordionExample{{app.pk}}">
+                                <div class="accordion-body">
+                                    <div style="    display: flex; justify-content: space-between;">
+                                        <p>Прошу <span class="text-danger">{{app.type.name}}</span> следующее оборудование:</p>
+                                        <div>
+                                            {% if group.name == 'ОТК' or group.name == 'Администрация' %}
+                                                <a href="{% url 'applications:otk_update' 'part_ready' app.pk %}" class="btn btn-delete p-1" style="background-color: yellow;">
+                                                    <i class="fas fa-check p-2 bg-white" style="background-color: yellow !important; color: black;"></i>
+                                                </a>
+
+                                                <a href="{% url 'applications:otk_update' 'full_ready' app.pk %}" class="btn btn-delete p-1" style="background-color: green;">
+                                                    <i class="fas fa-check p-2 bg-white" style="background-color: green !important; color: white;"></i>
+                                                </a>
+                                            {% endif %}
+
+                                            {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры'%}
+                                                <a href="{% if app.type.pk < 5 %}
+                                                            {% url 'applications:edit_app' 'first' app.pk %}
+                                                         {% elif app.type.pk == 5 %}
+                                                            {% url 'applications:edit_app' 'second' app.pk %}
+                                                         {% endif %}"
+
+                                                   class="btn btn-primary p-1" style="background-color: #673ab7;">
+                                                    <i class="fas fa-edit p-2 bg-white" style="background-color: #673ab7 !important; color: white;"></i>
+                                                </a>
+
+                                                <a href="{% url 'applications:delete_app' app.pk %}" class="btn btn-delete p-1" style="background-color: red;">
+                                                    <i class="fas fa-trash p-2 bg-white" style="background-color: red !important; color: white;"></i>
+                                                </a>
+                                            {% endif %}
+
+
+                                            {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
+                                                <a href="{% url 'applications:update_from_members' app.pk %}" class="btn btn-success p-1"
+                                                   style="background-color: #242325;">
+                                                    <i class="fas fas fa-pen-square p-1 fs-5 bg-white"
+                                                       style="background-color: #242325 !important; color: white;"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                  <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Наименование</th>
+                                            <th>Номер</th>
+                                            <th>Кол-во</th>
+                                            <th>К дате:</th>
+                                            <th>Статус</th>
+                                            <th>Примечание</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for content in app.content_set.all %}
+
+                                                <tr>
+                                                    <td>{{content.name}}</td>
+                                                    <td>{{content.text_number}}</td>
+                                                    <td>{{content.quantity}}</td>
+                                                    <td>{{content.date}}</td>
+                                                    <td>{{app.status.name}}</td>
+                                                    <td>{{content.note}}</td>
+                                                    <td style="padding-right: 0px; padding-left: 0px; width: 10%;">
+                                                        {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры'%}
+                                                            <a href="{% url 'applications:edit_content' content.pk %}"
+                                                               class="btn btn-primary p-1" style="background-color: #673ab7;">
+                                                                <i class="fas fa-edit p-2 bg-white"
+                                                                   style="background-color: #673ab7 !important; color: white;"></i>
+                                                            </a>
+
+                                                            <a href="{% url 'applications:delete_content'  content.pk %}"
+                                                               class="btn btn-delete p-1" style="background-color: red;">
+                                                                <i class="fas fa-trash p-2 bg-white" style="background-color: red !important; color: white;"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                  </table>
+                                  {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры'%}
+                                    <a  href="{% url 'applications:content_add' app.pk %}" style="background-color: #673AB7; width: 100%;" type="button"
+                                        class="btn btn-secondary mb-2">Добавить оборудование</a>
+
+                                    <a  href="{% url 'applications:set_ready' app.pk %}" style="width: 100%;" type="button"
+                                        class="btn btn-success mb-2">Установить статус готово</a>
+
+                                    <a  href="{% url 'applications:detail_app' app.pk %}" style="width: 100%;" type="button"
+                                            class="btn btn-warning mb-2">Детальный просмотр заявки</a>
+                                  {% endif %}
+
+
+
+                                  {% if group.name == 'Кладовщики' %}
+                                    <a  href="{% url 'applications:shipment' app.pk %}" style=" width: 100%;" type="button"
+                                        class="btn btn-success mb-2">Установить статус отгружено</a>
+                                  {% endif %}
+
+                                  {% if group.name == 'ОТК' %}
+                                    <a  href="{% url 'applications:return_to_manager' app.pk %}" style=" width: 100%;" type="button"
+                                        class="btn btn-danger mb-2">Возврат в отдел коммерции</a>
+                                  {% endif %}
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+            </div>
+            <div class="col-5 mt-5">
+                {% block content %}
+
+                {% endblock %}
+            </div>
+        {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+
+
+<script type="text/javascript">
+    $(".note").parentsUntil('.row').first().addClass('note-block');
+</script>
+
+<style>
+    body {
+    background-color: #cec9dd3b;
+    }
+    .btn-primary{
+        border-color:#171a1e;
+        background-color:#171a1e;
+    }
+
+    div.form-group{
+        width: 50% ;
+    }
+
+    .note-block{
+        width:100% !important;
+    }
+</style>
+
+<script type="text/javascript" src="{% static 'applications/MDB/js/mdb.min.js' %}"></script>
+
+</body>
+</html>

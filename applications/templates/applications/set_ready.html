@@ -1,0 +1,23 @@
+{% extends "applications/layout/basic.html" %}
+
+{% block title %} Установление статуса {% endblock %}
+
+{% block bar %}
+    <div class="d-flex justify-content-end" >
+
+        <form method="post">
+            {% csrf_token %}
+            <h4><span class="text-danger">Тип заявки:</span> {{app.type.name}}</h4>
+            <h4><span class="text-danger">Название фирмы:</span> {{app.name_firm}}</h4>
+            <h4><span class="text-danger">Город:</span> {{app.city}}</h4>
+            <h4><span class="text-danger">Коммерс:</span> {{app.user_manager}}</h4>
+
+            <h2 class="ml-3 mt-3 text-uppercase">Оборудование заявки:</h2>
+            {% for content in app.content_set.all %}
+                <h4 class="ml-5">{{content.name}}</h4>
+            {% endfor %}
+            <h4></h4>
+                <button class="btn btn-success" type="submit">Установить статус</button>
+        </form>
+    </div>
+{% endblock %}

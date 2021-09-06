@@ -1,0 +1,20 @@
+{% extends 'applications/layout/basic.html' %}
+{% load bootstrap4 %}
+
+
+{% block title %} Работа с заявками {% endblock %}
+
+{% block content %}
+    <form method="post" >
+
+        <div class="row m-2">
+            <h1 class="mb-4">{{name_operation}} Заявки</h1>
+            {% csrf_token%}
+            {% bootstrap_form form %}
+            <button class="btn btn-success text-uppercase fs-7" type="submit">{{action_name}}</button>
+        </div>
+    </form>
+
+
+{% endblock %}
+
