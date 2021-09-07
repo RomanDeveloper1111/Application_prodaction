@@ -18,7 +18,7 @@ ALLOWED_HOSTS = ['77.223.99.50']
 # Application definition
 
 INSTALLED_APPS = [
-    'bboard.apps.BboardConfig',
+    # 'bboard.apps.BboardConfig',
     'applications.apps.ApplicationsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
