@@ -74,7 +74,7 @@ class AppCreate(PermissionRequiredMixin, ApplicationsMixin, CreateView):
     raise_exception = False
     permission_required = ('applications.add_application',)
     template_name = 'applications/create_app.html'
-    success_url = "/applications/content/{}".format(Application.objects.last().pk)
+    # success_url = "/applications/content/{}".format(Application.objects.last().pk)
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
