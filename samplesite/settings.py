@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-k@n*4=4^(fgo9y6n2ujf93-u4$r*gkojxb8zw%gpjt#02%*@mn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '77.223.97.77', 'www.proba.ru', 'proba.ru']
+ALLOWED_HOSTS = ['127.0.0.1', '77.223.97.77', 'www.proba.ru', 'proba.ru','35.82.238.243']
 
 
 # Application definition
