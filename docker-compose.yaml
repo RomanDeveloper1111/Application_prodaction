@@ -1,5 +1,5 @@
 version: "3"
-
+#python manage.py shell -c 'from django.contrib.auth.models import User; User.objects.create_superuser("'"roma"'","'"test@"'","'"roma"'"); exit();' &&
 services:
   app:
     build: ./applications/
@@ -21,7 +21,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
-      - 5433:5433
+      - 5432:5432
     environment:
       - POSTGRES_USER=test
       - POSTGRES_PASSWORD=test
