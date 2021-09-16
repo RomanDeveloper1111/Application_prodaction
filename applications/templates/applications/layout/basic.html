@@ -20,7 +20,16 @@
 <header class="site-header sticky-top py-1">
         <nav class="container d-flex flex-column flex-md-row justify-content-around" style="align-items: center;">
             {% block panel %}
-                <a href="{% url 'applications:apps' %}">Заявки</a>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton2" data-mdb-toggle="dropdown"
+                            aria-expanded="false">
+                    Заявки
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
+                          <li><a class="dropdown-item" href="{% url 'applications:apps' %}">Главная</a></li>
+                          <li><a class="dropdown-item" href="{% url 'applications:app_done' %}">Отгруженные заявки</a></li>
+                        </ul>
+                </div>
                 {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры' %}
                     <div class="dropdown">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-mdb-toggle="dropdown"
@@ -45,7 +54,7 @@
                     </button>
                     {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры' or group.name == 'Кладовщики' or group.name == 'ОТК' %}
                         <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
-                          <li><a class="dropdown-item" href="{% url 'applications:app_done' %}">Отгруженные заявки</a></li>
+
                         </ul>
                     {% endif %}
                 </div>
