@@ -6,9 +6,9 @@ services:
     command: >
       sh -c  "python manage.py makemigrations &&
                 python manage.py migrate &&
-                python manage.py runserver 0.0.0.0:8080"
+                python manage.py runserver 0.0.0.0:80"
     ports:
-      - 8080:8080
+      - 80:80
     volumes:
       - ./:/usr/src/app/
     env_file:
