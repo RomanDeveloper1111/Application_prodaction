@@ -19,21 +19,23 @@
 
 <header class="site-header sticky-top py-1">
         <nav class="container d-flex flex-column flex-md-row justify-content-around" style="align-items: center;">
-            <a href="{% url 'applications:apps' %}">Заявки</a>
-            {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры' %}
-                <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-mdb-toggle="dropdown"
-                            aria-expanded="false">
-                    Добавить заявку
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
-                      <li><a class="dropdown-item" href="{% url 'applications:addApp' 'first' %}">Основная заявка</a></li>
-                      <li><a class="dropdown-item" href="{% url 'applications:addApp' 'second' %}">Заявка на отгрузку</a></li>
-                    </ul>
-                </div>
-            {% endif %}
+            {% block panel %}
+                <a href="{% url 'applications:apps' %}">Заявки</a>
+                {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры' %}
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-mdb-toggle="dropdown"
+                                aria-expanded="false">
+                        Добавить заявку
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+                          <li><a class="dropdown-item" href="{% url 'applications:addApp' 'first' %}">Основная заявка</a></li>
+                          <li><a class="dropdown-item" href="{% url 'applications:addApp' 'second' %}">Заявка на отгрузку</a></li>
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endblock %}
             {% if group.name == 'Начальники производства' or group.name == 'Администрация' %}
-                <a href="{% url 'applications:apps' %}">Выбор приложения</a>
+                <a href="{% url 'applications:chooseapp' %}">Выбор приложения</a>
             {% endif %}
 
             <div class="dropdown">
@@ -41,9 +43,11 @@
                             aria-expanded="false">
                     Здравствуйте, {{user.first_name}}
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
-                      <li><a class="dropdown-item" href="{% url 'applications:app_done' %}">Отгруженные заявки</a></li>
-                    </ul>
+                    {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры' or group.name == 'Кладовщики' or group.name == 'ОТК' %}
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
+                          <li><a class="dropdown-item" href="{% url 'applications:app_done' %}">Отгруженные заявки</a></li>
+                        </ul>
+                    {% endif %}
                 </div>
 
 

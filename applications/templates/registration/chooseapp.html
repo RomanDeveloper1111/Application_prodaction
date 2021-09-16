@@ -1,0 +1,32 @@
+{% extends 'applications/layout/basic.html' %}
+
+{% block title %}
+    Выбор приложения
+{% endblock %}
+
+{% block panel %} {% endblock %}
+
+{% block body %}
+    <div class="container-fluid d-flex justify-content-center mt-2 vh-100">
+        <div class="row w-50 d-flex vh-100 align-content-center">
+
+            <div class="card w-100">
+                <div class="card-body row">
+                    <div class="col-6 mb-3">
+                        <a href="{% url 'applications:apps' %}" class="btn btn-secondary w-100" style="background: #580e9d;">ОТДЕЛ КОММЕРЦИИ</a>
+                    </div>
+
+                    {% if group.name == 'Начальники производства' or group.name == 'Администрация' %}
+                        <div class="col-6 mb-3">
+                            <a  class="btn btn-secondary w-100" style="background: #580e9d;">ОТДЕЛ КОММЕРЦИИ</a>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+{% endblock %}

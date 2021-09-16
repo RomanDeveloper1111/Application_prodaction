@@ -5,7 +5,8 @@ from django.contrib.auth.views import LoginView, LogoutView
 
 app_name = 'applications'
 urlpatterns = [
-    path('', AppList.as_view(), name='apps'),
+    path('', ChooseApps.as_view(), name='chooseapp'),
+    path('apps/', AppList.as_view(), name='apps'),
 
     path('add/<slug:slug>/', AppCreate.as_view(), name='addApp'),
     path('edit_app/<slug:slug>/<int:pk>/', EditApp.as_view(), name='edit_app'),

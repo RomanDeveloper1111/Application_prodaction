@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from .forms import *
 from .models import *
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, TemplateView
 from .mixins import ApplicationsMixin
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin, LoginRequiredMixin
@@ -9,9 +9,18 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import Group
 
 
+class ChooseApps(LoginRequiredMixin, TemplateView):
+    template_name = 'registration/chooseapp.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['group'] = Group.objects.get(user=self.request.user.pk)
+        return context
+
+
 # Готов
-class AppList(LoginRequiredMixin, ListView):
-    permission_required = ('applications.add_application',)
+class AppList(PermissionRequiredMixin, ListView):
+    permission_required = ('applications.view_application',)
     template_name = 'applications/layout/basic.html'
     model = Application
 
