@@ -1,0 +1,32 @@
+{% extends 'salary/layout/basic.html' %}
+
+{% block title %} Удаление штрафа {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center mt-5">
+<div class="col-6 card">
+    <div class="card-body">
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <h2>Удаление штрафа</h2>
+            <hr>
+            <h5>Наименование штрафа: {{fine.name}}</h5>
+            <h5>Работник: {{fine.worker}}</h5>
+            <h5>Стоимость штрафа: {{fine.cost}}</h5>
+
+
+            <p class="card-text text-danger m-0 mt-5">
+                Внимание! Вся информация о штрафе работника будет удалена. Вы действительно хотите выполнить эту операцию?
+            </p>
+            <div class="d-flex justify-content-end">
+
+               <a class="btn btn-light" href="{% url 'salary:fine' %}">Отмена</a>
+                <button class="btn btn-danger ml-2" type="submit">Удалить</button>
+            </div>
+
+        </form>
+    </div>
+  </div>
+ </div>
+{% endblock %}

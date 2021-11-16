@@ -9,6 +9,7 @@
 
         <div class="row m-2">
             <h1 class="mb-4">{{name_operation}} Заявки</h1>
+            <hr>
             {% csrf_token%}
             {% bootstrap_form form %}
             <button class="btn btn-success text-uppercase fs-7" type="submit">{{action_name}}</button>

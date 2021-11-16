@@ -1,0 +1,201 @@
+{% extends "salary/layout/basic.html" %}
+{% load salary_dict %}
+{% block title %}
+Табель
+{% endblock %}
+
+{% block content %}
+
+<div class="list-group rounded-0 p-0" id="list-group">
+  <button type="button" class="list-group-item list-post list-group-item-action p-1" value="pass">Пропуск по уважительной</button>
+  <button type="button" class="list-group-item list-post list-group-item-action p-1" value="absenteeism">Прогул</button>
+  <button type="button" class="list-group-item list-post list-group-item-action p-1" value="sick">Больничный</button>
+  <button type="button" class="list-group-item list-post list-group-item-action p-1" value="weekend">Отпуск</button>
+  <button type="button" class="list-group-item list-post list-group-item-action p-1" value="holiday">Выходной</button>
+  <button type="button" class="list-group-item list-post list-group-item-action p-1" value="none">Убрать выделение</button>
+  <button type="button" class="list-group-item list-view list-group-item-action p-1" value="note">Примечание...</button>
+
+</div>
+
+
+
+<div class="col-12 p-3" style="overflow: auto;">
+
+    <table class="table table-sm table-bordered ">
+        <thead>
+            <tr class="text-center">
+                <th colspan="{{ calendar.keys|length|add:'+6' }}">Табель <span class="text-danger">{% now "F" %}</span> {% now "Y" %}г.</th>
+            </tr>
+            <tr>
+                <th class="p-0 text-center">№</th>
+                <th class="p-0 text-center ps-5 pe-5"><u>Ф.И.О</u></th>
+                <th class="p-0 text-center">Сумм</th>
+                <th class="p-0 text-center">Спец.</th>
+                {% for key, val in calendar.items %}
+                    {% if val == False %}
+                        <th style="background: #505d50; color:white;" class="p-0 text-center">{{key}}</th>
+                    {% else %}
+                        <th  class="p-0 text-center">{{key}}</th>
+                    {% endif %}
+                {% endfor %}
+                <th class="p-0 text-center">Сумм</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for worker in workers %}
+                <tr>
+                    <th class="text-center p-0">{{forloop.counter}}</th>
+                    <th class="text-center p-0">{{worker}}</th>
+                    {% with worker.id as id %}
+                        <th class="text-center p-0">{{ current_time_list|counttime:worker }}</th>
+                        <th class="text-center p-0">{{worker.position}}</th>
+
+                        {% for key, value in calendar.items %}
+
+                                <th class="text-center p-0">
+                                    <div class="input-group input-group-sm mb-0">
+
+                                            <input id = '{{id}}' day="{{key}}" name="{{current_time_list.pk}}" type="text" class="form-control p-0 text-center border-0 rounded-0"
+                                                   aria-label="Text input with dropdown button"
+                                                   style="background:{% dict current_time_list id forloop.counter 'background' %};
+                                                          color: {% dict current_time_list id forloop.counter 'color' %}"
+                                                   value="{% dict current_time_list id forloop.counter 'count' %}">
+                                    </div>
+                                </th>
+
+                        {% endfor %}
+                        <th class="text-center p-0">{{ current_time_list|counttime:worker }}</th>
+                        <th class="text-center p-0">
+                            <a href="{% url 'salary:del_worker_from_timesheet' current_time_list.pk worker.id%}">
+                                <button class="btn btn-danger p-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                </button>
+                            </a>
+                        </th>
+                    {% endwith %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="col-3 p-3 pt-0">
+    <table class="table table-bordered table-sm" >
+        <thead>
+            <tr>
+                <th class="p-1" style="background: #ffff00b3;"></th>
+                <th class="p-0 ps-1">по уважительной причине</th>
+            </tr>
+            <tr>
+                <th class="p-0" style="background: #ff0004b3;"></th>
+                <th class="p-0 ps-1">прогул</th>
+            </tr>
+            <tr>
+                <th class="p-0" style="background: #00ff10b3;"></th>
+                <th class="p-0 ps-1">больничный</th>
+            </tr>
+            <tr>
+                <th class="p-0" style="background: #1700ffb3;"></th>
+                <th class="p-0 ps-1">отпуск</th>
+            </tr>
+            <tr>
+                <th class="p-0" style="background: #505d50;"></th>
+                <th class="p-0 ps-1">выходной</th>
+            </tr>
+
+        </thead>
+    </table>
+</div>
+
+
+<form method="post" style="display: none;">
+    {% csrf_token %}
+    <input type="text" name="timesheet">
+    <input type="text" name="worker">
+    <input type="text" name="value">
+    <input type="text" name="day">
+    <input type="text" name="status">
+
+    <button type="submit" class="click_post"></button>
+
+</form>
+<style>
+    input:focus{
+        border: 1px solid green !important;
+    }
+    th {
+        vertical-align: middle !important;
+    }
+    .list-group{
+        width: fit-content !important;
+        background: #262626c9 !important;
+        display: none;
+        position: absolute;
+        z-index: 1000;
+    }
+    .list-group > button {
+        background: #262626c9;
+        color: white;
+        font-size: 12px;
+    }
+</style>
+
+<script type="text/javascript">
+    function show_hide(){
+        el = document.getElementById('list-group');
+        el.style.display = 'block';
+        el.style.top = event.clientY+'px';
+        el.style.left = event.clientX+'px';
+    }
+
+    function set_attr(timesheet, worker, val, day){
+        document.querySelector('input[name=timesheet]').setAttribute('value',timesheet);
+        document.querySelector('input[name=worker]').setAttribute('value',worker);
+        document.querySelector('input[name=value]').setAttribute('value',val);
+        document.querySelector('input[name=day]').setAttribute('value',day);
+    }
+
+    $('button.list-post').click(function(e){
+        document.querySelector('input[name=status]').setAttribute('value',this.value);
+        $(".click_post").click();
+    })
+
+    $('button.list-view').click(function(e){
+        document.querySelector('input[name=status]').setAttribute('value', 'note');
+        var timesheet = document.querySelector('input[name=timesheet]').getAttribute('value');
+        var worker = document.querySelector('input[name=worker]').getAttribute('value');
+        var day = document.querySelector('input[name=day]').getAttribute('value');
+        document.location.href = '/salary/view_timesheet/'+timesheet+'/'+worker+'/'+day;
+
+    })
+
+    $('input').contextmenu(function(event){
+        set_attr(this.name, this.id, this.value, this.getAttribute('day'));
+        show_hide();return false;
+    });
+
+    $('input').dblclick(function(event){
+        set_attr( this.name, this.id, this.value, this.getAttribute('day'));
+        show_hide();
+    });
+
+    $('body').click(function(event){
+        el = document.getElementById('list-group');
+        el.style.display = 'none';
+    });
+
+    $('input.form-control').keyup(function(event){
+        if(event.keyCode > 47 && event.keyCode <58 || event.keyCode > 95 && event.keyCode <106){
+            /*alert(this.id + ' ' +this.name + ' ' + this.value+' '+this.getAttribute('day'));*/
+            set_attr(this.name, this.id, this.value, this.getAttribute('day'));
+            $(".click_post").click();
+        }
+    })
+</script>
+{% endblock %}
+

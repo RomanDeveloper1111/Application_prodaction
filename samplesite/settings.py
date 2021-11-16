@@ -20,6 +20,7 @@ ALLOWED_HOSTS = ['meh50.ru', 'localhost', 'www.meh50.ru', 'http://www.meh50.ru/'
 INSTALLED_APPS = [
     # 'bboard.apps.BboardConfig',
     'applications.apps.ApplicationsConfig',
+    'salary.apps.SalaryConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -27,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap4',
+    'django_jinja',
 ]
 
 MIDDLEWARE = [

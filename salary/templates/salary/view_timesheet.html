@@ -1,0 +1,17 @@
+{% extends 'salary/layout/basic.html' %}
+
+{% block title %} Добавление примечания {% endblock %}
+
+{% block content %}
+
+
+<form action="" method="post" class="d-flex justify-content-center mt-5"
+      data-mdb-toggle="animation" data-mdb-animation-reset="true" data-mdb-animation="slide-out-right">
+    {% csrf_token %}
+    <div class="form-floating w-50">
+        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" name="note" style="height: 150px">{{note}}</textarea>
+        <label for="floatingTextarea2">Примечание</label>
+    </div>
+    <button class="btn btn-success"  type="submit">Сохранить</button>
+</form>
+{% endblock %}

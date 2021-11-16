@@ -1,0 +1,34 @@
+{%  extends 'salary/layout/basic.html' %}
+{% block title %} Удаление работника {% endblock %}
+
+
+{% block content %}
+
+<div class=" col-12 d-flex justify-content-center mt-5">
+
+<form action="" method="post">
+    <div class="card mb-2">
+        <div class="card-body">
+            <p class="card-text text-danger">
+            Внимание! Вся информация о работнике будет удалена. Вы действительно хотите выполнить эту операцию?
+          </p>
+          <div class="d-flex justify-content-end">
+            {% csrf_token %}
+            <a href="{% url 'salary:load_time_sheet' %}" class="btn btn-light">Отмена</a>
+            <button class="btn btn-danger ms-2" type="submit">Удалить</button>
+          </div>
+            <hr>
+          <h5 class="card-title">Удаление работника: {{worker.second_name}} {{worker.first_name}} ({{worker.position}})</h5>
+          {% for sheet in timesheet %}
+            <p class="mb-0">Дата: {{sheet.dataSheet|date:'F'}} {{sheet.dataSheet|date:'Y' }}</p>
+            <p class="mt-0 mb-0">Участок: {{sheet.department}} </p>
+            <p class="mt-0 mb-0">Бригадир: {{sheet.foreman}} </p>
+            <br>
+          {% endfor %}
+
+        </div>
+    </div>
+
+</form>
+</div>
+{% endblock %}

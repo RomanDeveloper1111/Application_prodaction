@@ -1,3 +1,6 @@
 Django
 psycopg2-binary
 django-bootstrap4
+numpy
+Jinja2
+django-jinja

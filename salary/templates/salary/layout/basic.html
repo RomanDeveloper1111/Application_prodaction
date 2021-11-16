@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} Главная {% endblock %}</title>
+    {% load static %}
+    {% load bootstrap4 %}
+    {% bootstrap_css %}
+    {% bootstrap_jquery jquery=True%}
+    <link rel="stylesheet" href="{% static 'applications/mdb/css/mdb.min.css' %}">
+    <link rel="stylesheet" href="{% static 'applications/bootstrap/dist/css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'applications/css/product.css' %}">
+
+
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone@7.15.8/babel.min.js"></script>
+    <script src="{% static 'applications\anime\anime-master\lib\anime.min.js' %}"></script>
+
+
+</head>
+    <body>
+    <header class="site-header sticky-top py-1">
+        <nav class="container d-flex flex-column flex-md-row justify-content-around" style="align-items: center;">
+
+            <a href="{% url 'applications:chooseapp' %}">Выбор приложения</a>
+
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-mdb-toggle="dropdown"
+                        aria-expanded="false"> Здравствуйте, {{user.first_name}}
+                </button>
+                {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры' or group.name == 'Кладовщики' or group.name == 'ОТК' %}
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
+
+                </ul>
+                {% endif %}
+            </div>
+
+
+
+            <a href="{% url 'applications:logout' %}" class="text-danger">Выйти</a>
+        </nav>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            {% block content %}
+
+            {% endblock %}
+        </div>
+    </div>
+
+<script src="{% static 'applications/mdb/js/mdb.min.js' %}"></script>
+</body>
+</html>

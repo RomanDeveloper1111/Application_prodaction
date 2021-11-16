@@ -5,7 +5,6 @@ from django.views.generic import ListView, DetailView, CreateView, DeleteView, U
 from .mixins import ApplicationsMixin
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin, LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import Group
 
 
@@ -118,7 +117,7 @@ class AppCreate(PermissionRequiredMixin, ApplicationsMixin, CreateView):
 
 
 # Готов
-class EditApp(PermissionRequiredMixin, ApplicationsMixin, SuccessMessageMixin, UpdateView):
+class EditApp(PermissionRequiredMixin, ApplicationsMixin, UpdateView):
     permission_required = ('applications.change_application',)
     model = Application
     template_name = 'applications/create_app.html'

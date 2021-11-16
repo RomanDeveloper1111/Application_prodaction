@@ -1,0 +1,38 @@
+{% extends 'salary/layout/basic.html' %}
+{% load bootstrap4 %}
+
+{% block title %} Добавление штрафа {% endblock %}
+
+
+{% block content %}
+
+<div class="  d-flex justify-content-center mt-5">
+  <div class="col-6 card">
+    <div class="card-body">
+      <h3>Добавление штрафа</h3>
+      <hr>
+      <form action="" method="post" class="row">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button class="btn btn-success mb-2" type="submit">СОХРАНИТЬ</button>
+        <a href="{% url 'salary:fine' %}" class="btn btn-light">ОТМЕНА</a>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<style>
+  .less_width{
+    width: 50% !important;
+  }
+</style>
+<script>
+  get_el = document.getElementsByClassName('fl');
+  for (i=0; i <= get_el.length; i++){
+    get_el[i].parentNode.setAttribute('class', 'form-group less_width')
+  }
+
+</script>
+{% endblock %}
+
