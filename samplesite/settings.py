@@ -19,6 +19,7 @@ ALLOWED_HOSTS = ['meh50.ru', 'localhost', 'www.meh50.ru', 'http://www.meh50.ru/'
 
 INSTALLED_APPS = [
     # 'bboard.apps.BboardConfig',
+    'rest_framework',
     'applications.apps.ApplicationsConfig',
     'salary.apps.SalaryConfig',
     'django.contrib.admin',
@@ -28,7 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap4',
-    'django_jinja',
+
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,9 @@ LOGOUT_REDIRECT_URL = 'applications:login'
 LOGIN_URL = 'applications:login'
 
 SESSION_COOKIE_AGE = 1800
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
