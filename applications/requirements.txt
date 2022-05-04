@@ -4,4 +4,4 @@ django-bootstrap4
 Jinja2
 django-jinja
 djangorestframework
-numpy==1.19.2
+numpy==1.21.5
