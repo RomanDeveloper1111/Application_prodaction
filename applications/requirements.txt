@@ -1,7 +1,7 @@
 Django
 psycopg2-binary
 django-bootstrap4
-numpy==1.19.2
 Jinja2
 django-jinja
 djangorestframework
+numpy==1.19.2
