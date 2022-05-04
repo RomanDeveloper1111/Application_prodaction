@@ -8,6 +8,39 @@ import datetime as dt
 register = template.Library()
 
 
+@register.simple_tag(name='get_month_and_year')
+def get_month_and_year(timesheet, status):
+    if status == 'month':
+        month = timesheet.dataSheet.strftime("%B")
+        if month == 'January':
+            return 'Январь'
+        elif month == 'February':
+            return 'Февраль'
+        elif month == 'March':
+            return 'Март'
+        elif month == 'April':
+            return 'Апрель'
+        elif month == 'May':
+            return 'Май'
+        elif month == 'June':
+            return 'Июнь'
+        elif month == 'July':
+            return 'Июль'
+        elif month == 'August':
+            return 'Август'
+        elif month == 'September':
+            return 'Сентябрь'
+        elif month == 'October':
+            return 'Октябрь'
+        elif month == 'November':
+            return 'Ноябрь'
+        elif month == 'December':
+            return 'Декабрь'
+
+    elif status == 'year':
+        return timesheet.dataSheet.year
+
+
 @register.simple_tag(name='dict')
 def search_dict(dictionary, worker, numb, method):
     dates = json.loads(TimeSheet.objects.get(pk=dictionary.pk).dates)
@@ -17,6 +50,8 @@ def search_dict(dictionary, worker, numb, method):
         return dates['{}'.format(worker)][1]['{}'.format(numb)][3]['background']
     if method == 'color':
         return dates['{}'.format(worker)][1]['{}'.format(numb)][4]['color']
+    if method == 'brig_salary':
+        return dates['{}'.format(worker)][3][1]['extra_from_foreman']
 
 
 @register.filter(name='counttime')
@@ -37,8 +72,8 @@ def convert(payroll):
 def payroll(dictionary, worker, method):
     if method == 'position':
         return Position.objects.get(pk=dictionary[worker][0][method])
-    if method == 'worker':
-        return Worker.objects.get(pk=worker)
+    if method == 'Worker':
+        return Worker.objects.get(pk=worker).pk
     if method == 'worker':
         return Worker.objects.get(pk=worker)
     if method == 'salary':

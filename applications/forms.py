@@ -4,6 +4,7 @@ from django import forms
 
 
 class AppCreateFormFirst(ModelForm):
+
     type = forms.ModelChoiceField(queryset=TypeOfApp.objects.filter(pk__in=[1, 2, 3, 4]), label='Тип заявки')
     boss = forms.ModelChoiceField(queryset=Group.objects.filter(name='Коммерция директора').first().user_set.all(),
                                   label='Директор')

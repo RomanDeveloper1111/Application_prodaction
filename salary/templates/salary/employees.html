@@ -1,10 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "salary/layout/basic.html" %}
+{% load salary_dict %}
+{% block title %}
+Сотрудники
+{% endblock %}
+
+{% block content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ФИО</th>
+                <th>Разряд</th>
+                <th>Должность</th>
+                <th>Оклад</th>
+                <th>Участок</th>
+
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for worker in workers %}
+                <tr>
+                    <td>{{worker.first_name}} {{worker.second_name}}</td>
+                    <td>{{worker.degree}}</td>
+                    <td>{{worker.position.name}}</td>
+                    <td>{{worker.position.salary}}</td>
+                    <td>{{worker.department.name}}</td>
+                    <td><a class="btn btn-primary" href="{% url 'salary:edit_employ' worker.pk %}">Изменить</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -15,3 +15,10 @@ class AddFineForm(forms.ModelForm):
     class Meta:
         model = Fine
         fields = ('name', 'cost', 'worker', 'note',)
+
+
+class EditEmploy(forms.ModelForm):
+
+    class Meta:
+        model = Worker
+        fields = '__all__'

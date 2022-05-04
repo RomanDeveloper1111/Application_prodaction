@@ -1,14 +1,17 @@
 version: "3"
 #python manage.py shell -c 'from django.contrib.auth.models import User; User.objects.create_superuser("'"roma"'","'"test@"'","'"roma"'"); exit();' &&
+#python manage.py makemigrations &&
+#python manage.py migrate &&
 services:
   app:
     build: ./applications/
     command: >
-      sh -c  "python manage.py makemigrations &&
-                python manage.py migrate &&
-                python manage.py runserver 0.0.0.0:80"
+      sh -c  "
+              python manage.py makemigrations &&
+              python manage.py migrate &&
+              python manage.py runserver 0.0.0.0:8000"
     ports:
-      - 80:80
+      - 8000:8000
     volumes:
       - ./:/usr/src/app/
     env_file:

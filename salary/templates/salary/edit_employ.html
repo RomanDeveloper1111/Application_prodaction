@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'applications/layout/basic.html' %}
+{% load bootstrap4 %}
+
+
+{% block title %} Редактирование сотрудника {% endblock %}
+
+{% block content %}
+    <form method="post" >
+
+        <div class="row m-2">
+
+            <hr>
+            {% csrf_token%}
+            {% bootstrap_form form %}
+            <button class="btn btn-success text-uppercase fs-7" type="submit">Изменить</button>
+        </div>
+    </form>
+
+
+{% endblock %}
+

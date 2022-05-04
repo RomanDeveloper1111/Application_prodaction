@@ -60,10 +60,11 @@ class Payroll(models.Model):
 
 
 class TimeSheet(models.Model):
-    dates = models.JSONField(null=True, verbose_name='Числа')
+    dates = models.JSONField(null=True, verbose_name='Данные')
     dataSheet = models.DateField(default=datetime.now().strftime('%Y-%m-%d'), verbose_name='Дата')
     foreman = models.CharField(max_length=50, verbose_name='Бригадир')
     department = models.ForeignKey(Department, null=True, on_delete=models.CASCADE, verbose_name='Участок')
+    status = models.CharField(max_length=50, default='open', null=True)
 
     def __str__(self):
         return '{} {}'.format(self.foreman, self.dataSheet)

@@ -12,6 +12,7 @@
             нет ни одного подобного участка.
         {% endif %}
 </p>
+
 <table class="table table-sm table-hover" style="width: 80% !important;">
     <thead>
      <tr class="text-center">
@@ -26,20 +27,31 @@
          <th >Пр нач. п.</th>
          <th >ЗП</th>
          <th >Аванс</th>
-         <th >Карта</th>
-         <th >Столовая</th>
-         <th >Прочее</th>
+         {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
+            <th >Карта</th>
+            <th >Столовая</th>
+            <th >Прочее</th>
+         {% endif %}
          <th >Штраф</th>
          <th >Выдача</th>
+         <th></th>
      </tr>
     </thead>
     <tbody>
         {% for payroll in payrolls %}
             {% with payroll|convert as dates %}
-            <tr>
-                <td colspan="17" class="text-center text-uppercase fs-5" style="background: #703baa; color: white;">
-                    {{payroll.department}}
-                </td>
+            <tr >
+                {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
+                    <td colspan="17" class="text-center text-uppercase fs-5" style="background: #703baa; color: white;">
+                        {{payroll.department}}
+                    </td>
+                {% endif %}
+                {% if group.name == 'Начальники производства' %}
+                    <td colspan="14" class="text-center text-uppercase fs-5" style="background: #703baa; color: white;">
+                        {{payroll.department}}
+                    </td>
+                {% endif %}
+
             </tr>
             {% for data in dates %}
                 <tr class="selector">
@@ -70,7 +82,7 @@
                     </td>
                     <td>
                         <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input class="form-control p-0 text-center border-0 rounded-0 coefficient"
+                            <input pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="coefficient" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 coefficient"
                                    type="text" value="{% get_method dates data 'coefficient' %}">
                         </div>
                     </td>
@@ -82,13 +94,13 @@
                     </td>
                     <td>
                         <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input class="form-control p-0 text-center border-0 rounded-0 extra_from_foreman"
+                            <input pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="extra_from_foreman" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 extra_from_foreman"
                                    type="float" value="{% get_method dates data 'extra_from_foreman' %}">
                         </div>
                     </td>
                     <td>
                         <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input class="form-control p-0 text-center border-0 rounded-0 extra_from_director"
+                            <input pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="extra_from_director" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 extra_from_director"
                                    type="float" value="{% get_method dates data 'extra_from_director' %}">
                         </div>
                     </td>
@@ -104,21 +116,39 @@
                                    type="float" value="{% get_method dates data 'prepayment' %}">
                         </div>
                     </td>
-                    <td id="1"  >
+                    {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
+                        <td  id="1"  >
+                    {% endif %}
+
+                    {% if group.name == 'Начальники производства'%}
+                        <td style="visibility: hidden; display: none;" id="1"  >
+                    {% endif %}
                         <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input class="form-control p-0 text-center border-0 rounded-0 card"
+                            <input pay_roll="{{payroll.pk}}" time_sh = "{{payroll.time_sheet.pk}}" name="card" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 card"
                                    type="float" value="{% get_method dates data 'card' %}">
                         </div>
                     </td>
-                    <td>
+                    {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
+                        <td  id="1"  >
+                    {% endif %}
+
+                    {% if group.name == 'Начальники производства'%}
+                        <td style="visibility: hidden; display: none;" id="1"  >
+                    {% endif %}
                         <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input class="form-control p-0 text-center border-0 rounded-0 breakfast"
+                            <input pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="breakfast" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 breakfast"
                                    type="float" value="{% get_method dates data 'breakfast' %}">
                         </div>
                     </td>
-                    <td>
+                    {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
+                        <td  id="1"  >
+                    {% endif %}
+
+                    {% if group.name == 'Начальники производства'%}
+                        <td style="visibility: hidden; display: none;" id="1"  >
+                    {% endif %}
                         <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input class="form-control p-0 text-center border-0 rounded-0 other"
+                            <input pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="other" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 other"
                                    type="float" value="{% get_method dates data 'other' %}">
                         </div>
                     </td>
@@ -137,12 +167,20 @@
                                    type="float" value="0.00">
                         </div>
                     </td>
+                    {% if forloop.counter == 1 %}
+                        <td rowspan=3 style="vertical-align: middle;"><a blank="true" href="{% url 'salary:load_time_sheet_by_date' payroll.department.pk payroll.time_sheet.dataSheet  %}" style="transform: rotate(90deg);" class="btn btn-success" ><span >Табель</span></a></td>
+                    {% endif %}
 
 
                 </tr>
             {% endfor %}
             {% endwith %}
         {% endfor %}
+        {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
+            <tr>
+                <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' %}"  style="width: 100%;" class="btn btn-secondary">Принять рассчетный лист</a></td>
+            </tr>
+        {% endif  %}
     </tbody>
 </table>
 
@@ -205,11 +243,35 @@ $(document).ready(function(){
 
 
     $('input.form-control').keyup(function(event){
-        if(event.keyCode > 47 && event.keyCode <58 || event.keyCode > 95 && event.keyCode <106 || event.keyCode == 13){
+        if(event.keyCode > 47 && event.keyCode <58 || event.keyCode > 95 && event.keyCode <106 ||
+            event.keyCode === 13 || event.keyCode === 8){
             parent = this.parentElement.parentNode.parentNode;
-             analysis_salary(parent);
+            console.log(this.value);
+            console.log(this.getAttribute('name'));
+            console.log(this.getAttribute('worker'));
+            console.log(this.getAttribute('time_sh'));
+            console.log(this.getAttribute('pay_roll'));
+            analysis_salary(parent);
+            const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name_field: this.getAttribute('name'),
+                value: this.value,
+                worker:this.getAttribute('worker'),
+                time_sheet_id:this.getAttribute('time_sh')
+            }),};
+            if (this.getAttribute('pay_roll') !== 'close'){
+                fetch('/salary/change-data/', requestOptions)
+            }
+            else{
+                alert('Ошибка! Расчетный лист принят бухгалтером!');
+            }
+
         }
     });
+
+
 });
 
 

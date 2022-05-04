@@ -11,9 +11,9 @@ def busy_days():
     return np.busday_count(d1, d2)
 
 
-def create_calendar(count_days):
+def create_calendar(count_days, get_month, get_year):
     days = {}
     for i in range(1, count_days+1):
-        days[i] = np.is_busday(date(datetime.now().year, datetime.now().month, i))
+        days[i] = np.is_busday(date(get_year, get_month, i))
     return days
 

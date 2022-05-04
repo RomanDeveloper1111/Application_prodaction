@@ -6,10 +6,10 @@ from .bussy_days import create_calendar, busy_days
 import json
 
 
-def create_dates(depart):
+def create_dates(depart, get_month, get_year):
     cln = {}
     workers = Worker.objects.filter(department=depart).order_by('-position')
-    calen = create_calendar(calendar.mdays[dt.date.today().month])
+    calen = create_calendar(calendar.mdays[get_month], get_month, get_year)
 
     for worker in workers:
         if worker.position.name in ['Охранник', ]:
@@ -19,7 +19,8 @@ def create_dates(depart):
         cln[worker.pk] = [{'position': worker.position.pk}, {}, {}, [{'coefficient': 1.0}, {'extra_from_foreman': 0.00},
                                                                  {'extra_from_director': 0.00}, {'prepayment': 0.00},
                                                                  {'card': 0.00}, {}, {'breakfast': 0.00},
-                                                                 {'other': 0.00}, {'norm_clocks': norm_clocks}
+                                                                 {'other': 0.00}, {'norm_clocks': norm_clocks},
+
                                                                  ]]
         summ = 0
         for key, value in calen.items():

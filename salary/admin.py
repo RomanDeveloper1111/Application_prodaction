@@ -18,8 +18,8 @@ class PayrollAdmin(admin.ModelAdmin):
 
 
 class TimeSheetAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'dataSheet', 'foreman', 'department')
-    list_display_links = ('dataSheet', 'foreman', 'department')
+    list_display = ('pk', 'dataSheet', 'foreman', 'department', 'status')
+    list_display_links = ('dataSheet', 'foreman', 'department', 'status')
 
 
 class PositionAdmin(admin.ModelAdmin):

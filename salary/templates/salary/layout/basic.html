@@ -31,11 +31,10 @@
                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-mdb-toggle="dropdown"
                         aria-expanded="false"> Здравствуйте, {{user.first_name}}
                 </button>
-                {% if group.name == 'Коммерция директора' or group.name == 'Администрация' or group.name == 'Менеджеры' or group.name == 'Кладовщики' or group.name == 'ОТК' %}
                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton1">
-
+                    <li class="dropdown-item">Личный кабинет</li>
                 </ul>
-                {% endif %}
+
             </div>
 
 

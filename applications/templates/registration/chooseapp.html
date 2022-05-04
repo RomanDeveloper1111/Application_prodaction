@@ -12,9 +12,11 @@
 
             <div class="card w-100 mt-5">
                 <div class="card-body row">
+                    {% if group.name != 'Бригадира' %}
                     <div class="col-6 mb-3">
                         <a href="{% url 'applications:apps' %}" class="btn btn-secondary w-100" style="background: #580e9d;">ОТДЕЛ КОММЕРЦИИ</a>
                     </div>
+                    {% endif %}
 
                     {% if group.name == 'Начальники производства' or group.name == 'Администрация' %}
                         <div class="col-6 mb-3">
@@ -22,7 +24,7 @@
                         </div>
                     {% endif %}
 
-                    {% if group.name == 'Начальники производства' or group.name == 'Администрация' or group.name == 'Бригадира' %}
+                    {% if group.name == 'Администрация' or group.name == 'Бригадира' %}
                         <div class="col-6 mb-3">
                             <a href="/salary/timesheet/"  class="btn btn-secondary w-100" style="background: #580e9d;">ТАБЕЛЬ</a>
                         </div>
@@ -30,6 +32,11 @@
                     {% if group.name == 'ОТК' or group.name == 'Администрация'%}
                         <div class="col-6 mb-3">
                             <a href="/salary/fine/"  class="btn btn-secondary w-100" style="background: #580e9d;">ШТРАФЫ</a>
+                        </div>
+                    {% endif %}
+                    {% if group.name == 'Начальники производства' or group.name == 'Администрация'%}
+                        <div class="col-6 mb-3">
+                            <a href="/salary/employees/"  class="btn btn-secondary w-100" style="background: #580e9d;">Сотрудники</a>
                         </div>
                     {% endif %}
 
