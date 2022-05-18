@@ -29,7 +29,7 @@ def create_dates(depart, get_month, get_year):
                 background = '#505d50'
                 color = '#fff'
             else:
-                count = 8
+                count = 0
                 background = '#fff'
                 color = '#000'
             cln[worker.pk][1][key] = [{'count': count}, {'status': 'null'},
@@ -42,16 +42,19 @@ def create_dates(depart, get_month, get_year):
 
 def add_worker(dictionary, worker):
     dates = json.loads(dictionary.dates)
-    calen = create_calendar(calendar.mdays[dt.date.today().month])
+    calen = create_calendar(calendar.mdays[dictionary.dataSheet.month], dictionary.dataSheet.month, dictionary.dataSheet.year)
     if worker.position.name in ['Охранник', ]:
         norm_clocks = int(len(calen.keys())) / 3 * 24
     else:
         norm_clocks = int(busy_days()) * 8
-    dates[str(worker.pk)] = [{'position': worker.position.pk}, {}, [{'coefficient': 1.0}, {'extra_from_foreman': 0.00},
+
+    dates[str(worker.pk)] = [{'position': worker.position.pk}, {}, {}, [{'coefficient': 1.0}, {'extra_from_foreman': 0.00},
                                                                     {'extra_from_director': 0.00}, {'prepayment': 0.00},
                                                                     {'card': 0.00}, {}, {'breakfast': 0.00},
-                                                                    {'other': 0.00}, {'norm_clocks': norm_clocks}
+                                                                    {'other': 0.00}, {'norm_clocks': norm_clocks},
+
                                                                     ]]
+
     summ = 0
     for key, value in calen.items():
         if not value:
@@ -59,13 +62,15 @@ def add_worker(dictionary, worker):
             background = '#505d50'
             color = '#fff'
         else:
-            count = 8
+            count = 0
             background = '#fff'
             color = '#000'
         dates[str(worker.pk)][1][key] = [{'count': count}, {'status': 'null'},
                                          {'note': ''}, {'background': background},
                                          {'color': color}]
         summ += count
+
+
     dates[str(worker.pk)][2] = {'sumclocks': summ}
     timesheet = TimeSheet.objects.get(pk=dictionary.pk)
     timesheet.dates = json.dumps(dates)

@@ -35,6 +35,7 @@ class Department(models.Model):
 
     name = models.CharField(max_length=50, verbose_name='Наименование')
     foreman = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Бригадир')
+    manufacture = models.ForeignKey('Manufacture', on_delete=models.SET_NULL, null=True, verbose_name='Производство')
 
     def __str__(self):
         return self.name
@@ -91,3 +92,28 @@ class Fine(models.Model):
         verbose_name = 'Штраф'
         verbose_name_plural = 'Штрафы'
         ordering = ['create_date',]
+
+
+class Coefficient(models.Model):
+    count = models.IntegerField(default=168, verbose_name='Сумма часов')
+    date_create = models.DateField(auto_now_add=True, verbose_name='Дата коэффициента')
+
+    def __str__(self):
+        return str(self.count)
+
+    class Meta:
+        verbose_name = 'Коэффициенты'
+        verbose_name_plural ='Коэффициенты'
+
+
+class Manufacture(models.Model):
+    name = models.CharField(max_length=50, verbose_name='Название производства')
+    director = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Начальник производства')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Производство'
+        verbose_name_plural ='Производства'
+

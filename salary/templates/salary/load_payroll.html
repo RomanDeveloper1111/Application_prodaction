@@ -12,15 +12,63 @@
             нет ни одного подобного участка.
         {% endif %}
 </p>
+<div class="col-9">
+    <div style="justify-content: center;
+    display: flex;">
+        <select style="" id="select_year" class="select-group"
+                onChange="choose_timesheet()">
 
-<table class="table table-sm table-hover" style="width: 80% !important;">
+            <option value="{{request_date.year}}">{{request_date.year}}</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+                <option value="2031">2031</option>
+                <option value="2032">2032</option>
+                <option value="2033">2033</option>
+        </select>
+        <select id="select_month" class="select-group"
+        onChange="choose_timesheet()">
+            <option value="{{request_date.month}}">{{request_date.month}}</option>
+
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+
+        </select>
+    </div>
+      <style>
+        select {
+            border-radius: 5px;
+            color: white;
+            background: #1266f1;
+            padding: 5px;
+            border: 1px solid #1266f1;
+            margin-right: 2px;
+        }
+    </style>
+<table class="table table-sm table-hover" style="width: 100% !important;">
     <thead>
      <tr class="text-center">
          <th ></th>
          <th >ФИО</th>
          <th >Должность</th>
          <th >Оклад</th>
-         <th >Разряд</th>
+<!--      <th >Разряд</th>   -->
          <th >К1</th>
          <th >Часы</th>
          <th >Пр бриг</th>
@@ -74,16 +122,21 @@
                                    type="text" readonly value="{% get_method dates data 'salary' %}">
                         </div>
                     </td>
+<!--                    <td>-->
+<!--                        <div class="input-group input-group-sm m-0 mb-0 ">-->
+<!--                            <input  class="form-control p-0 text-center border-0 rounded-0 degree"-->
+<!--                                   type="text" readonly value="{% get_method dates data 'degree' %}">-->
+<!--                        </div>-->
+<!--                    </td>-->
                     <td>
                         <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input  class="form-control p-0 text-center border-0 rounded-0 degree"
-                                   type="text" readonly value="{% get_method dates data 'degree' %}">
-                        </div>
-                    </td>
-                    <td>
-                        <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="coefficient" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 coefficient"
+                            {% if  payroll.status == 'close' %}
+                            <input disabled pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="coefficient" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 coefficient"
                                    type="text" value="{% get_method dates data 'coefficient' %}">
+                            {% else %}
+                                <input  pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="coefficient" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 coefficient"
+                                   type="text" value="{% get_method dates data 'coefficient' %}">
+                            {% endif %}
                         </div>
                     </td>
                     <td>
@@ -94,28 +147,46 @@
                     </td>
                     <td>
                         <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="extra_from_foreman" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 extra_from_foreman"
+                            {% if  payroll.status == 'close' %}
+                            <input disabled pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="extra_from_foreman" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 extra_from_foreman"
                                    type="float" value="{% get_method dates data 'extra_from_foreman' %}">
+                            {% else %}
+                                <input pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="extra_from_foreman" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 extra_from_foreman"
+                                   type="float" value="{% get_method dates data 'extra_from_foreman' %}">
+                            {% endif %}
                         </div>
                     </td>
                     <td>
                         <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="extra_from_director" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 extra_from_director"
+                            {% if  payroll.status == 'close' %}
+                            <input disabled pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="extra_from_director" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 extra_from_director"
                                    type="float" value="{% get_method dates data 'extra_from_director' %}">
+                            {% else %}
+                                <input pay_roll="{{payroll.status}}" time_sh = "{{payroll.time_sheet.pk}}" name="extra_from_director" worker="{% get_method dates data 'Worker' %}" class="form-control p-0 text-center border-0 rounded-0 extra_from_director"
+                                   type="float" value="{% get_method dates data 'extra_from_director' %}">
+                            {% endif %}
                         </div>
                     </td>
                     <td>
                         <div class="input-group input-group-sm m-0 mb-0 ">
+
                             <input  class="form-control p-0 text-center border-0 rounded-0 wage"
                                    type="text" readonly value="0.00">
                         </div>
                     </td>
+
                     <td>
                         <div class="input-group input-group-sm m-0 mb-0 ">
+                            {% if payroll.status == 'avans' or payroll.status == 'close' %}
+                            <input disabled  class="form-control p-0 text-center border-0 rounded-0 prepayment"
+                                   type="float" value="{% get_method dates data 'prepayment' %}">
+                            {% else %}
                             <input class="form-control p-0 text-center border-0 rounded-0 prepayment"
                                    type="float" value="{% get_method dates data 'prepayment' %}">
+                            {% endif %}
                         </div>
                     </td>
+
                     {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
                         <td  id="1"  >
                     {% endif %}
@@ -176,17 +247,45 @@
             {% endfor %}
             {% endwith %}
         {% endfor %}
-        {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
-            <tr>
-                <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' %}"  style="width: 100%;" class="btn btn-secondary">Принять рассчетный лист</a></td>
-            </tr>
-        {% endif  %}
+        {% if payrolls.count > 0 %}
+            {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
+                <tr>
+                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user 'close' %}"  style="width: 100%;" class="btn btn-secondary">Принять рассчетный лист</a></td>
+                </tr>
+            {% endif  %}
+            {% if group.name == 'Начальники производства' or group.name == 'Администрация' %}
+                <tr>
+                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user 'avans' %}"  style="width: 100%;" class="btn btn-secondary">Закрыть Аванс</a></td>
+                </tr>
+            {% endif %}
+        {% endif %}
     </tbody>
 </table>
+</div>
+<div class="col-3">
+    <div class="row" style="display: flex;">
+        <div class="col-6">
+            <a href="{% url 'salary:positions' %}" class="btn btn-secondary">Должности</a>
+        </div>
+
+        <div class="col-6">
+            Норма часов: <input  type="text"  id="full_time" name="{{coefficient.pk}}" class="  p-0 text-center border-0 rounded-0 fines" value="{{coefficient.count}}">
+        </div>
+
+    </div>
+
+
+</div>
 
 
 
 
+<style>
+    div.row {
+        width: 100% !important;
+        justify-content: flex-start !important;
+    }
+</style>
 
 </div>
 
@@ -217,22 +316,22 @@ $(document).ready(function(){
 
     function analysis_salary(parent){
         salary = Number(parent.children[3].children[0].children[0].value);
-        degree = Number(parent.children[4].children[0].children[0].value);
-        coefficient = Number(parent.children[5].children[0].children[0].value);
-        sumclocks = Number(parent.children[6].children[0].children[0].value);
-        extra_from_foreman = Number(parent.children[7].children[0].children[0].value);
-        extra_from_director = Number(parent.children[8].children[0].children[0].value);
-        prepayment = Number(parent.children[10].children[0].children[0].value);
-        cart = Number(parent.children[11].children[0].children[0].value);
-        kitchen = Number(parent.children[12].children[0].children[0].value);
-        other = Number(parent.children[13].children[0].children[0].value);
-        fines = Number(parent.children[14].children[0].children[0].value);
+        coefficient = Number(parent.children[4].children[0].children[0].value);
+        sumclocks = Number(parent.children[5].children[0].children[0].value);
+        extra_from_foreman = Number(parent.children[6].children[0].children[0].value);
+        extra_from_director = Number(parent.children[7].children[0].children[0].value);
+        prepayment = Number(parent.children[8].children[0].children[0].value);
+        cart = Number(parent.children[10].children[0].children[0].value);
+        kitchen = Number(parent.children[11].children[0].children[0].value);
+        other = Number(parent.children[12].children[0].children[0].value);
+        fines = Number(parent.children[13].children[0].children[0].value);
+        avans = Number(parent.children[9].children[0].children[0].value)
+        full_time = Number(document.getElementById('full_time').value);
 
-
-        parent.children[9].children[0].children[0].value =
-                Number((salary/176*sumclocks)*1*coefficient+extra_from_foreman+extra_from_director).toFixed(2);
-        parent.children[15].children[0].children[0].value =
-                Number(parent.children[9].children[0].children[0].value - prepayment - cart - kitchen - other - fines).toFixed(2);
+        parent.children[8].children[0].children[0].value =
+                Number((salary/full_time*sumclocks)*1*coefficient+extra_from_foreman+extra_from_director).toFixed(2);
+        parent.children[14].children[0].children[0].value =
+                Number(prepayment - (avans + cart + kitchen + other + fines)).toFixed(2);
     }
 
     all_selectors = document.getElementsByClassName('selector');
@@ -240,7 +339,20 @@ $(document).ready(function(){
         analysis_salary(all_selectors[i]);
     }
 
+    $('input#full_time').keyup(function(event) {
+        if (event.keyCode > 47 && event.keyCode < 58 || event.keyCode > 95 && event.keyCode < 106 ||
+            event.keyCode === 13 || event.keyCode === 8) {
 
+            const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                value: this.value
+            }),};
+            fetch('/salary/change-coefficient/', requestOptions);
+            window.location.href = '/salary/payroll/';
+        }
+    });
 
     $('input.form-control').keyup(function(event){
         if(event.keyCode > 47 && event.keyCode <58 || event.keyCode > 95 && event.keyCode <106 ||
@@ -272,9 +384,13 @@ $(document).ready(function(){
     });
 
 
+
 });
 
-
+    function choose_timesheet(){
+        date_times = document.getElementById('select_year').value +'-'+ document.getElementById('select_month').value + '-' + '01';
+        window.location.href = '/salary/payroll/' + date_times;
+    }
 
 
 

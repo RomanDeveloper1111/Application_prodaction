@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Worker, Fine, Payroll, TimeSheet, Position, Department
+from .models import Worker, Fine, Payroll, TimeSheet, Position, Department, Manufacture, Coefficient
 
 
 class WorkerAdmin(admin.ModelAdmin):
@@ -28,8 +28,17 @@ class PositionAdmin(admin.ModelAdmin):
 
 
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    list_display_links = ('name',)
+    list_display = ('name', 'foreman', 'manufacture')
+    list_display_links = ('name', 'foreman', 'manufacture')
+
+
+class CoefficientAdmin(admin.ModelAdmin):
+    list_display = ('count', 'date_create')
+    list_display_links = ('count', 'date_create')
+
+
+class ManufactureAdmin(admin.ModelAdmin):
+    list_display = ('name', 'director')
 
 
 admin.site.register(Worker, WorkerAdmin)
@@ -38,3 +47,6 @@ admin.site.register(Payroll, PayrollAdmin)
 admin.site.register(TimeSheet, TimeSheetAdmin)
 admin.site.register(Position, PositionAdmin)
 admin.site.register(Department, DepartmentAdmin)
+admin.site.register(Coefficient, CoefficientAdmin)
+admin.site.register(Manufacture, ManufactureAdmin)
+

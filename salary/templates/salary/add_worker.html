@@ -1,0 +1,28 @@
+{% extends 'salary/layout/basic.html' %}
+{% load bootstrap4 %}
+
+{% block title %} Добавление Работника {% endblock %}
+
+
+{% block content %}
+
+<div class="  d-flex justify-content-center mt-5">
+  <div class="col-6 card">
+    <div class="card-body">
+      {% if status == 'edit' %}
+        <h3>Редактирование/Перемещение Работника</h3>
+      {% else %}
+        <h3>Добавление Работника</h3>
+      {% endif %}
+      <hr>
+      <form action="" method="post" class="row">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button class="btn btn-success mb-2" type="submit">СОХРАНИТЬ</button>
+        <a href="{% url 'salary:load_time_sheet' %}" class="btn btn-light">ОТМЕНА</a>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

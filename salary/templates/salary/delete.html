@@ -1,0 +1,26 @@
+{% extends "salary/layout/basic.html" %}
+{% load bootstrap4 %}
+
+{% block title %}
+Удаление {{thing}}
+{% endblock %}
+
+{% block content %}
+
+    <div class="  d-flex justify-content-center mt-5">
+        <div class="col-6 card">
+            <div class="card-body">
+                <h3>Удаление {{thing}}</h3>
+                <hr>
+                <h5>Вы уверены, что хотите удалить объект?</h5>
+                <form action="" method="post" class="row">
+                    {% csrf_token %}
+
+                    <button class="btn btn-danger mb-2" type="submit">Удалить</button>
+                    <a href="{% url 'salary:positions' %}" class="btn btn-light">ОТМЕНА</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

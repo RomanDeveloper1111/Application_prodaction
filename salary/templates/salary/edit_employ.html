@@ -1,21 +1,27 @@
-{% extends 'applications/layout/basic.html' %}
+{% extends "salary/layout/basic.html" %}
 {% load bootstrap4 %}
 
 
 {% block title %} Редактирование сотрудника {% endblock %}
 
 {% block content %}
-    <form method="post" >
 
-        <div class="row m-2">
-
-            <hr>
-            {% csrf_token%}
-            {% bootstrap_form form %}
-            <button class="btn btn-success text-uppercase fs-7" type="submit">Изменить</button>
+<div class="  d-flex justify-content-center mt-5">
+    <div class="col-6 card">
+        <div class="card-body">
+            <form method="post" class="row m-2">
+                <div>
+                    <hr>
+                    {% csrf_token%}
+                    {% bootstrap_form form %}
+                    <div class="d-grid" >
+                    <button class="btn btn-success text-uppercase fs-7" type="submit">Изменить</button>
+                        </div>
+                </div>
+            </form>
         </div>
-    </form>
-
+    </div>
+</div>
 
 {% endblock %}
 

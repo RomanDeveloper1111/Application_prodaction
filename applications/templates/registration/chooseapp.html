@@ -20,11 +20,11 @@
 
                     {% if group.name == 'Начальники производства' or group.name == 'Администрация' %}
                         <div class="col-6 mb-3">
-                            <a href="/salary/payroll/"  class="btn btn-secondary w-100" style="background: #580e9d;">РАСЧЕТ ЗП</a>
+                            <a href="/salary/payroll/{{current_date}}"  class="btn btn-secondary w-100" style="background: #580e9d;">РАСЧЕТ ЗП</a>
                         </div>
                     {% endif %}
 
-                    {% if group.name == 'Администрация' or group.name == 'Бригадира' %}
+                    {% if group.name == 'Бригадира' %}
                         <div class="col-6 mb-3">
                             <a href="/salary/timesheet/"  class="btn btn-secondary w-100" style="background: #580e9d;">ТАБЕЛЬ</a>
                         </div>
@@ -37,6 +37,12 @@
                     {% if group.name == 'Начальники производства' or group.name == 'Администрация'%}
                         <div class="col-6 mb-3">
                             <a href="/salary/employees/"  class="btn btn-secondary w-100" style="background: #580e9d;">Сотрудники</a>
+                        </div>
+                    {% endif %}
+
+                    {% if group.name == 'Начальники производства' or group.name == 'Администрация'%}
+                        <div class="col-6 mb-3">
+                            <a href="/salary/positions/"  class="btn btn-secondary w-100" style="background: #580e9d;">Должности</a>
                         </div>
                     {% endif %}
 

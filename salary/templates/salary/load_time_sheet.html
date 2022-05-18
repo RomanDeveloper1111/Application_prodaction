@@ -81,7 +81,7 @@
                 <th class="p-0 text-center">№</th>
                 <th class="p-0 text-center ps-5 pe-5"><u>Ф.И.О</u></th>
                 <th class="p-0 text-center">Сумм</th>
-                <th class="p-0 text-center">Спец.</th>
+                <th class="p-0 text-center" style="width: 8%;">Спец.</th>
                 {% for key, val in calendar.items %}
                     {% if val == False %}
                         <th style="background: #505d50; color:white;" class="p-0 text-center">{{key}}</th>
@@ -101,17 +101,25 @@
             {% for worker in workers %}
                 <tr>
                     <th class="text-center p-0">{{forloop.counter}}</th>
-                    <th class="text-center p-0">{{worker}}</th>
+                    <th class="text-center p-0" id="{{worker.pk}}">{{worker}}</th>
                     {% with worker.id as id %}
                         <th class="text-center p-0">{{ current_time_list|counttime:worker }}</th>
-                        <th class="text-center p-0">{{worker.position}}</th>
+                        <th class="text-center p-0">
+
+                            <select style="padding: 1px;" class="form-select select_position"  aria-label="Default select example">
+                                <option selected value="{{worker.position.pk}}">{{worker.position}}</option>
+                                {% for position in positions %}
+                                    <option value="{{position.pk}}">{{position.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </th>
 
                         {% for key, value in calendar.items %}
 
                                 <th class="text-center p-0">
                                     <div class="input-group input-group-sm mb-0">
 
-                                            <input id = '{{id}}' day="{{key}}" name="{{current_time_list.pk}}" type="text" class="form-control p-0 text-center border-0 rounded-0"
+                                            <input position="{{worker.position.pk}}" id = '{{id}}' day="{{key}}" name="{{current_time_list.pk}}" type="text" class="form-control p-0 text-center border-0 rounded-0"
                                                    aria-label="Text input with dropdown button"
                                                    style="background:{% dict current_time_list id forloop.counter 'background' %};
                                                           color: {% dict current_time_list id forloop.counter 'color' %}"
@@ -123,7 +131,7 @@
                         <th class="text-center p-0">{{ current_time_list|counttime:worker }}</th>
                         <th class="text-center p-0">
                             <div class="input-group input-group-sm mb-0">
-                                <input id = '{{id}}' day="0" name="{{current_time_list.pk}}" type="text" class="form-control p-0 text-center border-0 rounded-0"
+                                <input position="{{worker.position.pk}}" id = '{{id}}' day="0" name="{{current_time_list.pk}}" type="text" class="form-control p-0 text-center border-0 rounded-0"
                                                    aria-label="Text input with dropdown button"
                                                    style="background: white;
                                                           color: black;"
@@ -131,6 +139,7 @@
                             </div>
                         </th>
                         <th class="text-center p-0">
+                            {% if current_time_list.status == 'open' %}
                             <a href="{% url 'salary:del_worker_from_timesheet' current_time_list.pk worker.id%}">
                                 <button class="btn btn-danger p-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -139,14 +148,27 @@
                                     </svg>
                                 </button>
                             </a>
+                            {% endif %}
                         </th>
+                    <th style="padding: 0;">
+                        {% if current_time_list.status == 'open' %}
+                       <a href="{% url 'salary:update-worker' worker.pk 'edit' %}" data-mdb-toggle="modal" data-mdb-target="#exampleModal" class="btn put_info btn-success" style="min-width: 30px !important;padding: 5px 0px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                                </svg>
+                            </a>
+                        {% endif %}
+                    </th>
                     {% endwith %}
                 </tr>
             {% endfor %}
         </tbody>
     </table>
-    {% if group.name == 'Бригадира' or group.name == 'Администрация'  %}
-        <a class="btn btn-success" href="{% url 'salary:update-status' current_time_list.pk %}">Отправить Начальнику Производства</a>
+    {% if group.name == 'Бригадира' or group.name == 'Администрация'   %}
+        {% if current_time_list.status == 'open' %}
+        <a class="btn btn-primary" href="{% url 'salary:update-status' current_time_list.pk %}">Отправить Начальнику Производства</a>
+        <a class="btn btn-success" href="{% url 'salary:add-worker' %}">Добавить работника</a>
+        {% endif %}
     {% endif %}
     {% if group.name == 'Начальники производства' or group.name == 'Администрация'  %}
         <a class="btn btn-secondary" href="{% url 'salary:payroll'  %}">Открыть рассчетный лист</a>
@@ -182,6 +204,30 @@
 </div>
 
 
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Перемещение сотрудника</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <input type="text" disabled class="form-control " id="modal_input">
+          <select style="padding: 2px; margin-top: 2px;" class="form-select select_position" id="select_department"  aria-label="Default select example">
+              <option selected value="0">ПУСТО</option>
+                {% for department in departments %}
+                    <option value="{{department.pk}}">{{department.name}} ({{department.manufacture.name}})</option>
+                {% endfor %}
+          </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Отмена</button>
+        <button onclick="sent_for_move()" type="button" class="btn btn-primary">Переместить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <form method="post" style="display: none;">
     {% csrf_token %}
     <input type="text" name="timesheet">
@@ -189,6 +235,7 @@
     <input type="text" name="value">
     <input type="text" name="day">
     <input type="text" name="status">
+    <input type="text" name="position">
 
     <button type="submit" class="click_post"></button>
 
@@ -212,6 +259,9 @@
         color: white;
         font-size: 12px;
     }
+    div.row {
+        justify-content: flex-start !important;
+    }
 </style>
 
 <script type="text/javascript">
@@ -222,11 +272,12 @@
         el.style.left = event.clientX+'px';
     }
 
-    function set_attr(timesheet, worker, val, day){
+    function set_attr(timesheet, worker, val, day, position){
         document.querySelector('input[name=timesheet]').setAttribute('value',timesheet);
         document.querySelector('input[name=worker]').setAttribute('value',worker);
         document.querySelector('input[name=value]').setAttribute('value',val);
         document.querySelector('input[name=day]').setAttribute('value',day);
+        document.querySelector('input[name=position]').setAttribute('value', position);
     }
 
     $('button.list-post').click(function(e){
@@ -244,12 +295,12 @@
     })
 
     $('input').contextmenu(function(event){
-        set_attr(this.name, this.id, this.value, this.getAttribute('day'));
+        set_attr(this.name, this.id, this.value, this.getAttribute('day'), this.getAttribute('position'));
         show_hide();return false;
     });
 
     $('input').dblclick(function(event){
-        set_attr( this.name, this.id, this.value, this.getAttribute('day'));
+        set_attr( this.name, this.id, this.value, this.getAttribute('day'), this.getAttribute('position'));
         show_hide();
     });
 
@@ -261,7 +312,7 @@
     $('input.form-control').keyup(function(event){
         if(event.keyCode > 47 && event.keyCode <58 || event.keyCode > 95 && event.keyCode <106){
             /*alert(this.id + ' ' +this.name + ' ' + this.value+' '+this.getAttribute('day'));*/
-            set_attr(this.name, this.id, this.value, this.getAttribute('day'));
+            set_attr(this.name, this.id, this.value, this.getAttribute('day'), this.getAttribute('position') );
             $(".click_post").click();
         }
     })
@@ -270,6 +321,67 @@
         date_times = document.getElementById('select_year').value +'-'+ document.getElementById('select_month').value + '-' + '01';
         window.location.href = '/salary/timesheet/' + department + '/' + date_times + '/';
     }
+
+    $('.select_position').change(function(e){
+        // select = document.getElementById('select_position')
+        name = this.parentNode.nextElementSibling.children[0].children[0].getAttribute('name')
+        id = this.parentNode.nextElementSibling.children[0].children[0].getAttribute('id')
+        value = this.parentNode.nextElementSibling.children[0].children[0].getAttribute('value')
+        day = this.parentNode.nextElementSibling.children[0].children[0].getAttribute('day')
+        position = this.value
+        console.log(name);
+        console.log(id);
+        console.log(value);
+        console.log(day);
+        console.log(this.value);
+
+        set_attr(name, id, value, day, position );
+        $(".click_post").click();
+
+    })
+
+    $('.put_info').click(function(e){
+        user_name = this.parentNode.parentNode.children[1].textContent
+        user_id = this.parentNode.parentNode.children[1].id
+        time_sheet_id = this.parentNode.parentNode.children[4].children[0].children[0].getAttribute('name')
+        console.log(user_name)
+        console.log(user_id)
+        console.log(time_sheet_id)
+        modal_input = document.getElementById('modal_input')
+        modal_input.setAttribute('name', user_id)
+        modal_input.setAttribute('time_sheet', time_sheet_id)
+        modal_input.value = user_name
+
+    })
+
+
+    function sent_for_move(){
+        modal_input = document.getElementById('modal_input')
+
+        worker_id = modal_input.getAttribute('name')
+        time_sheet_id = modal_input.getAttribute('time_sheet')
+        department = $('#select_department').val()
+
+        console.log(worker_id)
+        console.log(time_sheet_id)
+        console.log(department)
+        if (department > 0) {
+            const requestOptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    'worker_id': worker_id,
+                    'department': department,
+                    'time_sheet_id': time_sheet_id
+                }),};
+                fetch('/salary/move-worker/', requestOptions);
+                window.location.href = '/salary/timesheet/';
+        }
+        else {
+            alert('Не выбран участок!')
+        }
+    }
+
 </script>
 {% endblock %}
 

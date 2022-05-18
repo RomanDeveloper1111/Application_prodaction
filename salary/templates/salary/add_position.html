@@ -1,0 +1,25 @@
+{% extends "salary/layout/basic.html" %}
+{% load bootstrap4 %}
+
+{% block title %}
+{{operation}} Должности
+{% endblock %}
+
+{% block content %}
+
+    <div class="  d-flex justify-content-center mt-5">
+        <div class="col-6 card">
+            <div class="card-body">
+                <h3>{{operation}} Должности</h3>
+                <hr>
+                <form action="" method="post" class="row">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <button class="btn btn-success mb-2" type="submit">СОХРАНИТЬ</button>
+                    <a href="{% url 'salary:positions' %}" class="btn btn-light">ОТМЕНА</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -58,6 +58,7 @@ def search_dict(dictionary, worker, numb, method):
 def counttime(dictionary, worker):
     dates = json.loads(dictionary.dates)
     if dates.get(str(worker.pk)) is None:
+
         add_worker(dictionary, worker)
     dates = json.loads(TimeSheet.objects.get(pk=dictionary.pk).dates)
     return dates[str(worker.pk)][2]['sumclocks']

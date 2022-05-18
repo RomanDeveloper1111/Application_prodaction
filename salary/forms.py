@@ -22,3 +22,16 @@ class EditEmploy(forms.ModelForm):
     class Meta:
         model = Worker
         fields = '__all__'
+
+
+class NewPosition(forms.ModelForm):
+
+    class Meta:
+        model = Position
+        fields = '__all__'
+
+
+class AddNewWorker(forms.ModelForm):
+    class Meta:
+        model = Worker
+        fields = ('first_name', 'second_name', 'position')

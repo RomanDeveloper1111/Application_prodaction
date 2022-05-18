@@ -6,7 +6,7 @@ from .mixins import ApplicationsMixin
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.models import Group
-
+from datetime import datetime
 
 class ChooseApps(LoginRequiredMixin, TemplateView):
     template_name = 'registration/chooseapp.html'
@@ -14,6 +14,7 @@ class ChooseApps(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['group'] = Group.objects.get(user=self.request.user.pk)
+        context['current_date'] = datetime.now().strftime('%Y-%m-%d')
         return context
 
 
