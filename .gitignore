@@ -1,4 +1,4 @@
 /bboard
-/env.dev
+/.env.dev
 /db.sqlite3
-/gitignore
+/.gitignore
