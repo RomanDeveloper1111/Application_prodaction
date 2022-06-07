@@ -35,3 +35,25 @@ class AddNewWorker(forms.ModelForm):
     class Meta:
         model = Worker
         fields = ('first_name', 'second_name', 'position')
+
+
+class UpdateDepartForm(forms.ModelForm):
+
+    foreman = forms.ModelChoiceField(queryset=User.objects.
+                                     filter(pk__in=Group.objects.values_list('user').filter(name='Бригадира')),
+                                     label='Бригадир', to_field_name='pk')
+
+    class Meta:
+        model = Department
+        fields = ('name', 'foreman')
+
+
+class CreateDepartForm(forms.ModelForm):
+
+    foreman = forms.ModelChoiceField(queryset=User.objects.
+                                     filter(pk__in=Group.objects.values_list('user').filter(name='Бригадира')),
+                                     label='Бригадир', to_field_name='pk')
+
+    class Meta:
+        model = Department
+        fields = ('name', 'foreman', 'manufacture')

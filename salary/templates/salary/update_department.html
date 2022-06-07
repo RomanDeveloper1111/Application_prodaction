@@ -1,0 +1,31 @@
+{% extends "salary/layout/basic.html" %}
+{% load bootstrap4 %}
+
+{% block title %}
+  {{title}} должности
+{% endblock %}
+
+{% block content %}
+
+  <div class="container mt-5 d-flex justify-content-center">
+    <div class="row col-8 ">
+      <form method="post" >
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <div class="d-grid" >
+
+            <button class="btn btn-success text-uppercase fs-7 mb-2" type="submit">
+              {% if title == 'Редактирование' %}
+                Изменить
+              {% else %}
+                Сохранить
+              {% endif %}
+            </button>
+
+          <a class="btn btn-danger" href="{% url 'salary:departments' %}">Отмена</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

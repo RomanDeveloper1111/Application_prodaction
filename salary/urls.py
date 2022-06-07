@@ -33,4 +33,8 @@ urlpatterns = [
 
     path('add-worker', AddWorker.as_view(), name='add-worker'),
     path('update-worker/<int:pk>/<str:status>', UpdateWorker.as_view(), name='update-worker'),
+
+    path('departments/', ListDepartments.as_view(), name='departments'),
+    path('departments/<int:pk>', UpdateDepartment.as_view(), name='update-depart'),
+    path('department-create', CreateDepartment.as_view(), name='create-depart'),
 ]

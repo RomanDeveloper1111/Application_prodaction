@@ -17,16 +17,26 @@
 
 </div>
 
+{% if errors != '' %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="row ">
+        <h1>{{errors}}</h1>
+        <a href="{% url 'salary:load_time_sheet' %}" class="btn btn-success">Перейти к табелю</a>
+    </div>
 
+</div>
+{% endif %}
+{% if errors == '' %}
 
 <div class="col-12 p-3" style="overflow: auto;">
 
     <div style="justify-content: center;
     display: flex;">
         <select style="" id="select_year" class="select-group"
-                onChange="choose_timesheet({{current_time_list.department.pk}})">
+                onChange="choose_timesheet({{current_department.pk}})">
 
             <option value="{{current_time_list.dataSheet.year}}">{{current_time_list.dataSheet.year}}</option>
+                <option value="2021">2021</option>
                 <option value="2022">2022</option>
                 <option value="2023">2023</option>
                 <option value="2024">2024</option>
@@ -41,7 +51,7 @@
                 <option value="2033">2033</option>
         </select>
         <select id="select_month" class="select-group"
-        onChange="choose_timesheet({{current_time_list.department.pk}})">
+        onChange="choose_timesheet({{current_department.pk}})">
             <option value="{{current_time_list.dataSheet.month}}">{{current_time_list.dataSheet.month}}</option>
 
                 <option value="01">01</option>
@@ -171,7 +181,7 @@
         {% endif %}
     {% endif %}
     {% if group.name == 'Начальники производства' or group.name == 'Администрация'  %}
-        <a class="btn btn-secondary" href="{% url 'salary:payroll'  %}">Открыть рассчетный лист</a>
+        <a class="btn btn-secondary" href="{% url 'salary:payroll' current_date %}">Открыть рассчетный лист</a>
     {% endif %}
 </div>
 
@@ -202,7 +212,7 @@
         </thead>
     </table>
 </div>
-
+{% endif %}
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">

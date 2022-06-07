@@ -1,5 +1,7 @@
 import datetime as dt
 import json
+
+from django.db.models import Count
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
@@ -91,7 +93,7 @@ def update_status_pay_roll(request, user_pk, status):
         pay_roll.status = status
         pay_roll.save()
 
-    return redirect('/salary/payroll/')
+    return redirect('/salary/payroll/{}'.format(dt.datetime.now().strftime("%Y-%m-%d")))
 
 
 def update_status_time_sheet(request, pk):
@@ -113,25 +115,33 @@ class LoadTimeSheetByTime(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        dat = TimeSheet.objects.filter(department=Department.objects.get(pk=self.kwargs['department_id']).pk,
+        dat = TimeSheet.objects.filter(
                                        dataSheet__year=dt.datetime.strptime(self.kwargs['datetm'], "%Y-%m-%d").year,
-                                       dataSheet__month=dt.datetime.strptime(self.kwargs['datetm'], "%Y-%m-%d").month
+                                       dataSheet__month=dt.datetime.strptime(self.kwargs['datetm'], "%Y-%m-%d").month,
+                                       foreman='{} {}'.format(self.request.user.last_name, self.request.user.first_name)
                                        ).last()
-        context['calendar'] = create_calendar(calendar.mdays[dat.dataSheet.month], dat.dataSheet.month,
+        try:
+            context['errors'] =''
+            context['calendar'] = create_calendar(calendar.mdays[dat.dataSheet.month], dat.dataSheet.month,
                                               dat.dataSheet.year)
-        context['months'] = ['Январь', 'Февраль', 'Март', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь',
+
+            context['months'] = ['Январь', 'Февраль', 'Март', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь',
                              'Октябрь', 'Ноябрь', 'Декабрь']
 
-        context['current_time_list'] = dat
-        context['positions'] = Position.objects.all()
-        depart = Department.objects.get(pk=self.kwargs['department_id'])
-        if dat.status == 'open':
-            context['workers'] = Worker.objects.filter(department=depart.id).order_by('-position')
-        else:
-            arr_workers = [x for x in json.loads(dat.dates)]
-            context['workers'] = Worker.objects.filter(pk__in=arr_workers)
+            context['current_time_list'] = dat
+            context['positions'] = Position.objects.all()
+            depart = Department.objects.get(pk=self.kwargs['department_id'])
+            if dat.status == 'open':
+                context['workers'] = Worker.objects.filter(department=depart.id).order_by('-position')
+            else:
+                arr_workers = [x for x in json.loads(dat.dates)]
+                context['workers'] = Worker.objects.filter(pk__in=arr_workers)
+        except:
+            context['errors'] = 'Табеля не существует!'
         context['group'] = Group.objects.get(user=self.request.user.pk)
         context['departments'] = Department.objects.all()
+        context['current_department'] = Department.objects.get(foreman=self.request.user.pk)
+        context['current_date'] = dt.datetime.now().strftime("%Y-%m-%d")
 
         return context
 
@@ -197,16 +207,17 @@ class LoadTimeSheet(LoginRequiredMixin, TemplateView):
         dat = TimeSheet.objects.filter(foreman='{} {}'.format(self.request.user.last_name, self.request.user.first_name)
                                        ).last()
 
-
         context['calendar'] = create_calendar(calendar.mdays[dat.dataSheet.month], dat.dataSheet.month, dat.dataSheet.year)
         context['months'] = ['Январь', 'Февраль', 'Март', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь',
                              'Октябрь', 'Ноябрь', 'Декабрь']
-
 
         context['current_time_list'] = dat
         context['positions'] = Position.objects.all()
         depart = Department.objects.get(foreman=self.request.user.pk)
         context['departments'] = Department.objects.all()
+        context['current_department'] = Department.objects.get(foreman=self.request.user.pk)
+        context['errors'] = ''
+
         if dat.status == 'open':
             context['workers'] = Worker.objects.filter(department=depart.id).order_by('-position')
         else:
@@ -358,25 +369,35 @@ class PayRoll(LoginRequiredMixin, ListView):
                                            ).exists()):
                 Payroll.objects.create(time_sheet=time_sheet, status=False, department=time_sheet.department,
                                        Note='', name_director='')
+        if Group.objects.get(user=self.request.user.pk).name == 'Администрация' or Group.objects.get(user=self.request.user.pk).name == 'Бухгалтерия':
+            return Payroll.objects.filter(time_sheet__status='close',
 
-        return Payroll.objects.filter(time_sheet__status='close',
-                                      time_sheet__department__manufacture__director=self.request.user.pk,
-                                      time_sheet__dataSheet__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
-                                      time_sheet__dataSheet__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month
-                                      )
+                                          time_sheet__dataSheet__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
+                                          time_sheet__dataSheet__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month
+                                          )
+        else:
+            return Payroll.objects.filter(time_sheet__status='close',
+                                          time_sheet__department__manufacture__director=self.request.user.pk,
+                                          time_sheet__dataSheet__year=dt.datetime.strptime(self.kwargs['request_date'],
+                                                                                           "%Y-%m-%d").year,
+                                          time_sheet__dataSheet__month=dt.datetime.strptime(self.kwargs['request_date'],
+                                                                                            "%Y-%m-%d").month
+                                          )
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['errors'] = Department.objects.exclude(pk__in=[pay_dep.department.pk for pay_dep in Payroll.objects.filter(
+        context['errors'] = Department.objects.filter(pk__in=[pay_dep.department.pk for pay_dep in Payroll.objects.filter(
                                     time_sheet__dataSheet__year=dt.datetime.now().year,
                                     time_sheet__dataSheet__month=dt.datetime.now().month,
-                                    time_sheet__status='close',
+                                    time_sheet__status='open',
                                     time_sheet__department__manufacture__director=self.request.user.pk)])
         context['group'] = Group.objects.get(user=self.request.user.pk)
         context['coefficient'] = Coefficient.objects.get(date_create__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
                                                         date_create__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month)
-        context['user'] = self.request.user.pk
+
         context['request_date'] = dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d")
+        context['current_date'] = dt.datetime.now().strftime("%Y-%m-%d")
+        context['user'] = User.objects.get(pk=self.request.user.pk)
         return context
 
 
@@ -452,6 +473,48 @@ class UpdateWorker(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['status'] = self.kwargs['status']
+        return context
+
+
+class ListDepartments(LoginRequiredMixin, ListView):
+    model = Department
+    context_object_name = 'departments'
+    template_name = 'salary/departments.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['errors'] = []
+        check_foreman = []
+        for i in Department.objects.all():
+            if i.foreman.pk not in check_foreman:
+                check_foreman.append(i.foreman.pk)
+            else:
+                context['errors'].append(i.foreman.pk)
+        context['errors'] = User.objects.filter(pk__in=context['errors'])
+        return context
+
+
+class UpdateDepartment(LoginRequiredMixin, UpdateView):
+    model = Department
+    form_class = UpdateDepartForm
+    template_name = 'salary/update_department.html'
+    success_url = reverse_lazy('salary:departments')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['title'] = 'Редактирование'
+        return context
+
+
+class CreateDepartment(LoginRequiredMixin, CreateView):
+    model = Department
+    success_url = reverse_lazy('salary:departments')
+    template_name = 'salary/update_department.html'
+    form_class = CreateDepartForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['title'] = 'Добавление'
         return context
 
 

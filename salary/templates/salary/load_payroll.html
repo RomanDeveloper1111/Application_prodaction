@@ -91,7 +91,7 @@
             <tr >
                 {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
                     <td colspan="17" class="text-center text-uppercase fs-5" style="background: #703baa; color: white;">
-                        {{payroll.department}}
+                        {{payroll.department}} {{ payroll.department.manufacture.name }}
                     </td>
                 {% endif %}
                 {% if group.name == 'Начальники производства' %}
@@ -248,20 +248,36 @@
             {% endwith %}
         {% endfor %}
         {% if payrolls.count > 0 %}
-            {% if group.name == 'Бухгалтерия' or group.name == 'Администрация'%}
+            {% if group.name == 'Бухгалтерия' %}
                 <tr>
-                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user 'close' %}"  style="width: 100%;" class="btn btn-secondary">Принять рассчетный лист</a></td>
+                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user.pk 'close' %}"  style="width: 100%;" class="btn btn-secondary">Принять рассчетный лист</a></td>
                 </tr>
             {% endif  %}
             {% if group.name == 'Начальники производства' or group.name == 'Администрация' %}
+                {% if payrolls.first.status != 'avans' %}
                 <tr>
-                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user 'avans' %}"  style="width: 100%;" class="btn btn-secondary">Закрыть Аванс</a></td>
+                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user.pk 'avans' %}"  style="width: 100%;" class="btn btn-secondary">Закрыть Аванс</a></td>
                 </tr>
+                {% endif %}
+                {% if payrolls.first.status != 'close salary' %}
+                <tr>
+                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user.pk 'close salary' %}"  style="width: 100%;" class="btn btn-secondary">Отправить</a></td>
+                </tr>
+                {% endif %}
             {% endif %}
         {% endif %}
     </tbody>
 </table>
 </div>
+
+{% if payrolls.first.status == 'close salary' and group.name != 'Бухгалтерия' and group.name != 'Администрация' %}
+    <script>
+        var all_inputs = document.getElementsByTagName('input');
+        for (var i = 0; i < all_inputs.length; i++) {
+            all_inputs[i].setAttribute('readonly', 'readonly');
+        }
+    </script>
+{% endif %}
 <div class="col-3">
     <div class="row" style="display: flex;">
         <div class="col-6">
@@ -350,7 +366,7 @@ $(document).ready(function(){
                 value: this.value
             }),};
             fetch('/salary/change-coefficient/', requestOptions);
-            window.location.href = '/salary/payroll/';
+            window.location.href = '/salary/payroll/'+ '{{current_date}}';
         }
     });
 
