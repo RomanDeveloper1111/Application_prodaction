@@ -42,6 +42,27 @@ class MoveWorker(APIView):
         return Response()
 
 
+def change_position_in_timesheet(time_sheet, worker, position):
+    data = json.loads(time_sheet.dates)
+    data[str(worker.pk)][0]['position'] = position.pk
+    time_sheet.dates = json.dumps(data)
+    time_sheet.save()
+
+
+class ChangePosition(APIView):
+    def post(self, request, format=None):
+        get_worker = Worker.objects.get(pk=request.data['worker_id'])
+        get_position = Position.objects.get(pk=request.data['position_id'])
+        get_worker.position = get_position
+        get_worker.save()
+
+        get_pre_timesheet = TimeSheet.objects.filter(department=request.data['department'], status='close').last()
+        get_current_timesheet = TimeSheet.objects.filter(department=request.data['department'], status='open').last()
+        change_position_in_timesheet(get_pre_timesheet, get_worker, get_position)
+        change_position_in_timesheet(get_current_timesheet, get_worker, get_position)
+        return redirect(f'/payroll/{str(dt.datetime.now().strftime("%Y-%m-%d"))}')
+
+
 class ChangeCoefficient(APIView):
     def post(self, request, format=None):
         get_coeff = Coefficient.objects.get(date_create__year=dt.datetime.now().year,
@@ -118,7 +139,7 @@ class LoadTimeSheetByTime(LoginRequiredMixin, TemplateView):
         dat = TimeSheet.objects.filter(
                                        dataSheet__year=dt.datetime.strptime(self.kwargs['datetm'], "%Y-%m-%d").year,
                                        dataSheet__month=dt.datetime.strptime(self.kwargs['datetm'], "%Y-%m-%d").month,
-                                       foreman='{} {}'.format(self.request.user.last_name, self.request.user.first_name)
+                                       department=Department.objects.get(pk=self.kwargs['department_id'])
                                        ).last()
         try:
             context['errors'] =''
@@ -140,7 +161,7 @@ class LoadTimeSheetByTime(LoginRequiredMixin, TemplateView):
             context['errors'] = 'Табеля не существует!'
         context['group'] = Group.objects.get(user=self.request.user.pk)
         context['departments'] = Department.objects.all()
-        context['current_department'] = Department.objects.get(foreman=self.request.user.pk)
+        context['current_department'] = Department.objects.get(pk=self.kwargs['department_id'])
         context['current_date'] = dt.datetime.now().strftime("%Y-%m-%d")
 
         return context
@@ -357,7 +378,8 @@ class PayRoll(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         get_all_time_sheets = TimeSheet.objects.filter(dataSheet__year=dt.datetime.now().year,
-                                                       dataSheet__month=dt.datetime.now().month)
+                                                       dataSheet__month=dt.datetime.now().month,
+                                                       status='close')
 
         if (not Coefficient.objects.filter(date_create__year=dt.datetime.now().year,
                                            date_create__month=dt.datetime.now().month).exists()):
@@ -392,9 +414,12 @@ class PayRoll(LoginRequiredMixin, ListView):
                                     time_sheet__status='open',
                                     time_sheet__department__manufacture__director=self.request.user.pk)])
         context['group'] = Group.objects.get(user=self.request.user.pk)
-        context['coefficient'] = Coefficient.objects.get(date_create__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
+        try:
+            context['coefficient'] = Coefficient.objects.get(date_create__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
                                                         date_create__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month)
-
+        except:
+            pass
+        context['positions'] = Position.objects.all()
         context['request_date'] = dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d")
         context['current_date'] = dt.datetime.now().strftime("%Y-%m-%d")
         context['user'] = User.objects.get(pk=self.request.user.pk)
@@ -483,15 +508,20 @@ class ListDepartments(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['errors'] = []
-        check_foreman = []
+        check_departments = []
         for i in Department.objects.all():
-            if i.foreman.pk not in check_foreman:
-                check_foreman.append(i.foreman.pk)
-            else:
-                context['errors'].append(i.foreman.pk)
-        context['errors'] = User.objects.filter(pk__in=context['errors'])
+            if i.foreman is None:
+                check_departments.append(i.pk)
+
+        context['errors'] = Department.objects.filter(pk__in=check_departments)
         return context
+
+
+def is_foreman(worker):
+    if Department.objects.filter(foreman=worker.pk).exists():
+        return True
+    else:
+        return False
 
 
 class UpdateDepartment(LoginRequiredMixin, UpdateView):
@@ -504,6 +534,52 @@ class UpdateDepartment(LoginRequiredMixin, UpdateView):
         context = super().get_context_data()
         context['title'] = 'Редактирование'
         return context
+
+    def form_valid(self, form):
+        department = form.instance.name
+        manufacture = form.instance.manufacture
+        new_foreman = form.instance.foreman
+        pre_foreman = Department.objects.get(manufacture=manufacture, name=department).foreman
+
+        if is_foreman(User.objects.get(pk=new_foreman.pk)):
+
+            department_by_new_foreman = Department.objects.get(foreman=User.objects.get(pk=new_foreman.pk).pk)
+            department_by_new_foreman.foreman = None
+            department_by_new_foreman.save()
+
+        if pre_foreman is not None:
+            if TimeSheet.objects.filter(department=Department.objects.get(manufacture=manufacture, name=department),
+                                     status='open').exists():
+                # Табель прошлого бригадира
+                get_timesheet_by_pre_foreman = TimeSheet.objects.get(
+                    department=Department.objects.get(manufacture=manufacture, name=department), status='open')
+                # Изменение бригадир в табеле
+                get_timesheet_by_pre_foreman.foreman = '{} {}'.format(User.objects.get(pk=new_foreman.pk).last_name,
+                                                                      User.objects.get(pk=new_foreman.pk).first_name)
+                # Сохранение табела
+                get_timesheet_by_pre_foreman.save()
+
+                department_by_pre_foreman = Department.objects.get(manufacture=manufacture, name=department)
+                department_by_pre_foreman.foreman = User.objects.get(pk=new_foreman.pk)
+                department_by_pre_foreman.save()
+
+            if TimeSheet.objects.filter(foreman=User.objects.get(pk=new_foreman.pk).pk, status='open').exists():
+                get_timesheet_by_new_foreman = TimeSheet.objects.get(foreman=User.objects.get(pk=new_foreman.pk).pk,
+                                                                     status='open')
+                get_timesheet_by_new_foreman.foreman = None
+                get_timesheet_by_new_foreman.save()
+        elif pre_foreman is None:
+            check_timsheet_by_department = TimeSheet.objects.filter(
+                department=Department.objects.get(manufacture=manufacture, name=department), status='open').exists()
+            if check_timsheet_by_department:
+                timesheet = TimeSheet.objects.get(
+                department=Department.objects.get(manufacture=manufacture, name=department), status='open')
+                timesheet.foreman = User.objects.get(pk=new_foreman.pk)
+                timesheet.save()
+
+        form.save()
+
+        return redirect("/salary/departments/")
 
 
 class CreateDepartment(LoginRequiredMixin, CreateView):

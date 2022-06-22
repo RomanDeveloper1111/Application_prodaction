@@ -21,7 +21,7 @@ class EditEmploy(forms.ModelForm):
 
     class Meta:
         model = Worker
-        fields = '__all__'
+        fields = ('first_name', 'second_name', 'position', 'department')
 
 
 class NewPosition(forms.ModelForm):
@@ -38,20 +38,23 @@ class AddNewWorker(forms.ModelForm):
 
 
 class UpdateDepartForm(forms.ModelForm):
-
     foreman = forms.ModelChoiceField(queryset=User.objects.
-                                     filter(pk__in=Group.objects.values_list('user').filter(name='Бригадира')),
+                                     filter(pk__in=Group.objects.values_list('user').filter(name='Бригадира')).
+                                     values_list('first_name', flat=True),
                                      label='Бригадир', to_field_name='pk')
+    manufacture = forms.ModelChoiceField(queryset=Manufacture.objects.all(), required=False, label='Производство',
+                                         widget=forms.widgets.Select(attrs={'disabled': True}), to_field_name='pk')
 
     class Meta:
         model = Department
-        fields = ('name', 'foreman')
+        fields = ('__all__')
 
 
 class CreateDepartForm(forms.ModelForm):
 
     foreman = forms.ModelChoiceField(queryset=User.objects.
-                                     filter(pk__in=Group.objects.values_list('user').filter(name='Бригадира')),
+                                     filter(pk__in=Group.objects.values_list('user').filter(name='Бригадира')).
+                                     values_list('first_name', flat=True),
                                      label='Бригадир', to_field_name='pk')
 
     class Meta:

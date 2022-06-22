@@ -30,6 +30,7 @@ urlpatterns = [
     path('delete-position/<int:pk>', DeletePosition.as_view(), name='delete-position'),
 
     path('change-coefficient/', ChangeCoefficient.as_view(), name='change-coefficient'),
+    path('change-position/', ChangePosition.as_view(), name='change-position'),
 
     path('add-worker', AddWorker.as_view(), name='add-worker'),
     path('update-worker/<int:pk>/<str:status>', UpdateWorker.as_view(), name='update-worker'),

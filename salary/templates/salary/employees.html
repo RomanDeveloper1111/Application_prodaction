@@ -9,7 +9,7 @@
         <thead>
             <tr>
                 <th>ФИО</th>
-                <th>Разряд</th>
+
                 <th>Должность</th>
                 <th>Оклад</th>
                 <th>Участок</th>
@@ -21,7 +21,7 @@
             {% for worker in workers %}
                 <tr>
                     <td>{{worker.first_name}} {{worker.second_name}}</td>
-                    <td>{{worker.degree}}</td>
+
                     <td>{{worker.position.name}}</td>
                     <td>{{worker.position.salary}}</td>
                     <td>{{worker.department.name}}</td>

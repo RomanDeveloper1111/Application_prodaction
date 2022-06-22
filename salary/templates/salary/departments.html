@@ -9,9 +9,9 @@
 
         {% if errors.count > 0 %}
     <div class="col-12">
-        <h2 class="text-danger">Внимание! Есть пользователи, закрепленные за несколькими участками! Пользователи:
+        <h2 class="text-danger">Внимание! Есть участки не закрепленные бригадиром! Участки:
             {% for error in errors %}
-                {{error.first_name}}
+                {{error.name}}
             {% endfor %}
         </h2>
     </div>

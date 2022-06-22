@@ -12,7 +12,7 @@ class Worker(models.Model):
     department = models.ForeignKey('Department', null=True, on_delete=models.SET_NULL, verbose_name='Участок')
 
     def __str__(self):
-        return "{} {}".format(self.first_name, self.second_name)
+        return "{} {}".format(self.second_name, self.first_name)
 
     class Meta:
         verbose_name = 'Работник'
@@ -32,10 +32,9 @@ class Position(models.Model):
 
 
 class Department(models.Model):
-
     name = models.CharField(max_length=50, verbose_name='Наименование')
-    foreman = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Бригадир')
-    manufacture = models.ForeignKey('Manufacture', on_delete=models.SET_NULL, null=True, verbose_name='Производство')
+    foreman = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, default='null', verbose_name='Бригадир')
+    manufacture = models.ForeignKey('Manufacture', on_delete=models.SET_NULL, null=True, default='null',  verbose_name='Производство')
 
     def __str__(self):
         return self.name

@@ -96,7 +96,7 @@
                 {% endif %}
                 {% if group.name == 'Начальники производства' %}
                     <td colspan="14" class="text-center text-uppercase fs-5" style="background: #703baa; color: white;">
-                        {{payroll.department}}
+                        {{payroll.department}} {{ payroll.department.manufacture.name }}
                     </td>
                 {% endif %}
 
@@ -111,10 +111,19 @@
                         </div>
                     </td>
                     <td>
-                        <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input  class="form-control p-0 text-center border-0 rounded-0 position"
-                                   type="text" readonly value="{% get_method dates data 'position' %}">
-                        </div>
+
+                        <select style="padding: 1px; width: auto; padding-right: 30px;"  department="{{payroll.department.pk}}" worker="{%get_method dates data 'Worker'%}"
+                                class="form-select select_position"  aria-label="Default select example">
+                                <option selected value="{% get_method dates data 'position' %}">{% get_method dates data 'position' %}</option>
+                                {% for position in positions %}
+                                    <option value="{{position.pk}}">{{position.name}}</option>
+                                {% endfor %}
+                            </select>
+
+<!--                        <div class="input-group input-group-sm m-0 mb-0 ">-->
+<!--                            <input  class="form-control p-0 text-center border-0 rounded-0 position"-->
+<!--                                   type="text" readonly value="{% get_method dates data 'position' %}">-->
+<!--                        </div>-->
                     </td>
                     <td>
                         <div class="input-group input-group-sm m-0 mb-0 ">
@@ -254,12 +263,12 @@
                 </tr>
             {% endif  %}
             {% if group.name == 'Начальники производства' or group.name == 'Администрация' %}
-                {% if payrolls.first.status != 'avans' %}
+                {% if payrolls.first.status != 'avans' and  payrolls.first.status != 'close salary'%}
                 <tr>
                     <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user.pk 'avans' %}"  style="width: 100%;" class="btn btn-secondary">Закрыть Аванс</a></td>
                 </tr>
                 {% endif %}
-                {% if payrolls.first.status != 'close salary' %}
+                {% if payrolls.first.status == 'avans' %}
                 <tr>
                     <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user.pk 'close salary' %}"  style="width: 100%;" class="btn btn-secondary">Отправить</a></td>
                 </tr>
@@ -405,9 +414,24 @@ $(document).ready(function(){
 
     function choose_timesheet(){
         date_times = document.getElementById('select_year').value +'-'+ document.getElementById('select_month').value + '-' + '01';
-        window.location.href = '/salary/payroll/' + date_times;
+        window.open('/salary/payroll/' + date_times);
     }
 
+    $('.select_position').change(function(e){
+      worker = this.getAttribute('worker');
+      department = this.getAttribute('department');
+      position = this.value;
+      const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+                    'worker_id': worker,
+                    'department': department,
+                    'position_id': position
+          }),};
+      fetch('/salary/change-position/', requestOptions);
+
+    })
 
 
 </script>
