@@ -218,15 +218,14 @@ class LoadTimeSheet(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        if (not TimeSheet.objects.filter(foreman='{} {}'.format(self.request.user.last_name,
-                                                                self.request.user.first_name)).exists()):
+        if not TimeSheet.objects.filter(department=Department.objects.get(foreman=self.request.user.pk)).exists():
             TimeSheet.objects.create(dates=create_dates(Department.objects.get(foreman=self.request.user.pk).pk, dt.date.today().month, dt.date.today().year),
                                      dataSheet=dt.datetime.now(),
                                      foreman='{} {}'.format(self.request.user.last_name, self.request.user.first_name),
                                      department=Department.objects.get(foreman=self.request.user.pk))
 
-        dat = TimeSheet.objects.filter(foreman='{} {}'.format(self.request.user.last_name, self.request.user.first_name)
-                                       ).last()
+        dat = TimeSheet.objects.filter(department=Department.objects.get(foreman=self.request.user.pk),
+                                       status='open').last()
 
         context['calendar'] = create_calendar(calendar.mdays[dat.dataSheet.month], dat.dataSheet.month, dat.dataSheet.year)
         context['months'] = ['Январь', 'Февраль', 'Март', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь',
