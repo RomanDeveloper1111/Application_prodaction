@@ -376,20 +376,23 @@ class PayRoll(LoginRequiredMixin, ListView):
     model = Payroll
 
     def get_queryset(self):
-        get_all_time_sheets = TimeSheet.objects.filter(dataSheet__year=dt.datetime.now().year,
-                                                       dataSheet__month=dt.datetime.now().month,
+        get_all_time_sheets = TimeSheet.objects.filter(dataSheet__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
+                                                       dataSheet__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
                                                        status='close')
 
-        if (not Coefficient.objects.filter(date_create__year=dt.datetime.now().year,
-                                           date_create__month=dt.datetime.now().month).exists()):
-            Coefficient.objects.create(count=busy_days()*8)
+        if (not Coefficient.objects.filter(date_create__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
+                                           date_create__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month).exists()):
+            Coefficient.objects.create(count=busy_days()*8,
+                                       date_create=dt.date(year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
+                                                           month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
+                                                           day=1))
         for time_sheet in get_all_time_sheets:
             if (not Payroll.objects.filter(department=time_sheet.department,
-                                           time_sheet__dataSheet__month=dt.datetime.now().month,
-                                           time_sheet__dataSheet__year=dt.datetime.now().year,
+                                           time_sheet__dataSheet__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
+                                           time_sheet__dataSheet__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
                                            ).exists()):
                 Payroll.objects.create(time_sheet=time_sheet, status=False, department=time_sheet.department,
-                                       Note='', name_director='')
+                                       Note='', name_director=self.request.user)
         if Group.objects.get(user=self.request.user.pk).name == 'Администрация' or Group.objects.get(user=self.request.user.pk).name == 'Бухгалтерия':
             return Payroll.objects.filter(time_sheet__status='close',
 
@@ -408,8 +411,8 @@ class PayRoll(LoginRequiredMixin, ListView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         context['errors'] = Department.objects.filter(pk__in=[pay_dep.department.pk for pay_dep in Payroll.objects.filter(
-                                    time_sheet__dataSheet__year=dt.datetime.now().year,
-                                    time_sheet__dataSheet__month=dt.datetime.now().month,
+                                    time_sheet__dataSheet__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
+                                    time_sheet__dataSheet__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
                                     time_sheet__status='open',
                                     time_sheet__department__manufacture__director=self.request.user.pk)])
         context['group'] = Group.objects.get(user=self.request.user.pk)
