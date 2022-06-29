@@ -65,8 +65,7 @@ class ChangePosition(APIView):
 
 class ChangeCoefficient(APIView):
     def post(self, request, format=None):
-        get_coeff = Coefficient.objects.get(date_create__year=dt.datetime.now().year,
-                                            date_create__month=dt.datetime.now().month)
+        get_coeff = Coefficient.objects.get(pk=request.data['id'])
         get_coeff.count = request.data['value']
         get_coeff.save()
         return Response()

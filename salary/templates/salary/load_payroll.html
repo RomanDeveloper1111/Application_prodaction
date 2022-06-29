@@ -372,10 +372,11 @@ $(document).ready(function(){
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                value: this.value
+                value: this.value,
+                id: this.getAttribute('name')
             }),};
             fetch('/salary/change-coefficient/', requestOptions);
-            window.location.href = '/salary/payroll/'+ '{{current_date}}';
+            window.location.href = '/salary/payroll/'+ '{{payrolls.first.time_sheet.dataSheet|date:"Y-m-d"}}';
         }
     });
 

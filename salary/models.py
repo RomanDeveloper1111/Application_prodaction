@@ -95,7 +95,7 @@ class Fine(models.Model):
 
 class Coefficient(models.Model):
     count = models.IntegerField(default=168, verbose_name='Сумма часов')
-    date_create = models.DateField(auto_now_add=True, verbose_name='Дата коэффициента')
+    date_create = models.DateField(verbose_name='Дата коэффициента')
 
     def __str__(self):
         return str(self.count)
