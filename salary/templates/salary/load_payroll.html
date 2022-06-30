@@ -191,6 +191,7 @@
                                    type="float" value="{% get_method dates data 'prepayment' %}">
                             {% else %}
                             <input class="form-control p-0 text-center border-0 rounded-0 prepayment"
+                                   pay_roll="{{payroll.pk}}" time_sh = "{{payroll.time_sheet.pk}}" name="prepayment" worker="{% get_method dates data 'Worker' %}"
                                    type="float" value="{% get_method dates data 'prepayment' %}">
                             {% endif %}
                         </div>
@@ -263,14 +264,14 @@
                 </tr>
             {% endif  %}
             {% if group.name == 'Начальники производства' or group.name == 'Администрация' %}
-                {% if payrolls.first.status != 'avans' and  payrolls.first.status != 'close salary'%}
+                {% if payrolls.first.status != 'avans' and  payrolls.first.status != 'close_salary'%}
                 <tr>
-                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user.pk 'avans' %}"  style="width: 100%;" class="btn btn-secondary">Закрыть Аванс</a></td>
+                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user.pk 'avans' payrolls.first.time_sheet.dataSheet|date:'Y-m-d' %}"  style="width: 100%;" class="btn btn-secondary">Закрыть Аванс</a></td>
                 </tr>
                 {% endif %}
                 {% if payrolls.first.status == 'avans' %}
                 <tr>
-                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user.pk 'close salary' %}"  style="width: 100%;" class="btn btn-secondary">Отправить</a></td>
+                    <td colspan="17" ><a href="{% url 'salary:update-status-pay-roll' user.pk 'close_salary' payrolls.first.time_sheet.dataSheet|date:'Y-m-d'%}"  style="width: 100%;" class="btn btn-secondary">Отправить</a></td>
                 </tr>
                 {% endif %}
             {% endif %}
@@ -279,7 +280,7 @@
 </table>
 </div>
 
-{% if payrolls.first.status == 'close salary' and group.name != 'Бухгалтерия' and group.name != 'Администрация' %}
+{% if payrolls.first.status == 'close_salary' and group.name != 'Бухгалтерия' and group.name != 'Администрация' %}
     <script>
         var all_inputs = document.getElementsByTagName('input');
         for (var i = 0; i < all_inputs.length; i++) {

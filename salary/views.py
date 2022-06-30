@@ -94,6 +94,8 @@ class ChangeData(APIView):
             get_dates[request.data['worker']][3][1][request.data['name_field']] = request.data['value']
         elif request.data['name_field'] == 'extra_from_director':
             get_dates[request.data['worker']][3][2][request.data['name_field']] = request.data['value']
+        elif request.data['name_field'] == 'prepayment':
+            get_dates[request.data['worker']][3][3][request.data['name_field']] = request.data['value']
         elif request.data['name_field'] == 'card':
             get_dates[request.data['worker']][3][4][request.data['name_field']] = request.data['value']
         elif request.data['name_field'] == 'breakfast':
@@ -105,15 +107,15 @@ class ChangeData(APIView):
         return Response()
 
 
-def update_status_pay_roll(request, user_pk, status):
-    get_pay_roll = Payroll.objects.filter(time_sheet__dataSheet__year=dt.datetime.now().year,
-                                          time_sheet__dataSheet__month=dt.datetime.now().month,
+def update_status_pay_roll(request, user_pk, status, date):
+    get_pay_roll = Payroll.objects.filter(time_sheet__dataSheet__year=dt.datetime.strptime(date, "%Y-%m-%d").year,
+                                          time_sheet__dataSheet__month=dt.datetime.strptime(date, "%Y-%m-%d").month,
                                           time_sheet__department__manufacture__director=user_pk)
     for pay_roll in get_pay_roll:
         pay_roll.status = status
         pay_roll.save()
 
-    return redirect('/salary/payroll/{}'.format(dt.datetime.now().strftime("%Y-%m-%d")))
+    return redirect('/salary/payroll/{}'.format(dt.datetime.strptime(date, "%Y-%m-%d").strftime("%Y-%m-%d")))
 
 
 def update_status_time_sheet(request, pk):
