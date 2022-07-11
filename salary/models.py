@@ -96,6 +96,7 @@ class Fine(models.Model):
 class Coefficient(models.Model):
     count = models.IntegerField(default=168, verbose_name='Сумма часов')
     date_create = models.DateField(verbose_name='Дата коэффициента')
+    status = models.CharField(max_length=100, default='null', null=True, verbose_name='Статус')
 
     def __str__(self):
         return str(self.count)

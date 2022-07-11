@@ -127,8 +127,15 @@
                     </td>
                     <td>
                         <div class="input-group input-group-sm m-0 mb-0 ">
-                            <input  class="form-control p-0 text-center border-0 rounded-0 salary"
-                                   type="text" readonly value="{% get_method dates data 'salary' %}">
+                            {% if payroll.status == 'avans' %}
+
+                                <input class="form-control p-0 text-center border-0 rounded-0 salary"
+                                   type="float" readonly value="{% get_method dates data 'fixed_salary' %}">
+                            {% else %}
+                                <input  class="form-control p-0 text-center border-0 rounded-0 salary"
+                                   type="float" readonly value="{% get_method dates data 'salary' %}">
+                            {% endif %}
+
                         </div>
                     </td>
 <!--                    <td>-->
@@ -295,7 +302,12 @@
         </div>
 
         <div class="col-6">
-            Норма часов: <input  type="text"  id="full_time" name="{{coefficient.pk}}" class="  p-0 text-center border-0 rounded-0 fines" value="{{coefficient.count}}">
+            Норма часов работников: <input  type="text"  id="full_time_worker"
+                                            name="{{coefficient_worker.pk}}" class=" full_time  p-0 text-center border-0 rounded-0 fines"
+                                            value="{{coefficient_worker.count}}">
+            Норма часов охранников: <input  type="text"  id="full_time_guard"
+                                            name="{{coefficient_guard.pk}}" class="full_time  p-0 text-center border-0 rounded-0 fines"
+                                            value="{{coefficient_guard.count}}">
         </div>
 
     </div>
@@ -352,12 +364,14 @@ $(document).ready(function(){
         other = Number(parent.children[12].children[0].children[0].value);
         fines = Number(parent.children[13].children[0].children[0].value);
         avans = Number(parent.children[9].children[0].children[0].value)
-        full_time = Number(document.getElementById('full_time').value);
 
-        parent.children[8].children[0].children[0].value =
+        if (parent.children[2].children[0].children[0].value !== 'Охранник'){
+            full_time = Number(document.getElementById('full_time_worker').value);
+            parent.children[8].children[0].children[0].value =
                 Number((salary/full_time*sumclocks)*1*coefficient+extra_from_foreman+extra_from_director).toFixed(2);
-        parent.children[14].children[0].children[0].value =
+            parent.children[14].children[0].children[0].value =
                 Number(prepayment - (avans + cart + kitchen + other + fines)).toFixed(2);
+        }
     }
 
     all_selectors = document.getElementsByClassName('selector');
@@ -365,7 +379,7 @@ $(document).ready(function(){
         analysis_salary(all_selectors[i]);
     }
 
-    $('input#full_time').keyup(function(event) {
+    $('input.full_time').keyup(function(event) {
         if (event.keyCode > 47 && event.keyCode < 58 || event.keyCode > 95 && event.keyCode < 106 ||
             event.keyCode === 13 || event.keyCode === 8) {
 

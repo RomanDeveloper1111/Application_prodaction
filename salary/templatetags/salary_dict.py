@@ -79,6 +79,8 @@ def payroll(dictionary, worker, method):
         return Worker.objects.get(pk=worker)
     if method == 'salary':
         return Worker.objects.get(pk=worker).position.salary
+    if method == 'fixed_salary':
+        return float(dictionary[worker][3][9]['salary'])
     if method == 'degree':
         return Worker.objects.get(pk=worker).degree
     if method == 'coefficient':

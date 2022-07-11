@@ -10,7 +10,7 @@ urlpatterns = [
          name='del_worker_from_timesheet'),
     path('move-worker/', MoveWorker.as_view(), name="move-worker"),
 
-    path('change-status/<int:pk>', update_status_time_sheet, name='update-status'),
+    path('change-status/<int:pk>/<str:status>', update_status_time_sheet, name='update-status'),
     path('change-status-pay-roll/<int:user_pk>/<str:status>/<str:date>', update_status_pay_roll, name='update-status-pay-roll'),
     path('change-data/', ChangeData.as_view()),
 

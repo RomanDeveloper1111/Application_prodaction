@@ -1,7 +1,6 @@
 import datetime as dt
 import json
 
-from django.db.models import Count
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
@@ -9,7 +8,7 @@ from django.views.generic import ListView, DetailView, UpdateView, DeleteView, C
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, render, HttpResponse
-from django.contrib.auth.models import Group
+from django.db.models import Q
 from .pylibs.bussy_days import busy_days, create_calendar
 from .pylibs.time_sheet import create_dates, delete_worker
 import calendar
@@ -113,22 +112,35 @@ def update_status_pay_roll(request, user_pk, status, date):
                                           time_sheet__department__manufacture__director=user_pk)
     for pay_roll in get_pay_roll:
         pay_roll.status = status
+        if status == 'avans':
+            data_timesheet = json.loads(pay_roll.time_sheet.dates)
+            for worker in data_timesheet:
+                data_timesheet[str(worker)][3][9]['salary'] = int(Worker.objects.get(pk=worker).position.salary)
+            pay_roll.time_sheet.dates = json.dumps(data_timesheet)
+            pay_roll.time_sheet.save()
         pay_roll.save()
 
     return redirect('/salary/payroll/{}'.format(dt.datetime.strptime(date, "%Y-%m-%d").strftime("%Y-%m-%d")))
 
 
-def update_status_time_sheet(request, pk):
+def update_status_time_sheet(request, pk, status):
     timeSheet = TimeSheet.objects.get(pk=pk)
-    timeSheet.status = 'close'
+    pre_status = timeSheet.status
+    timeSheet.status = status
     timeSheet.save(update_fields=['status'])
-    next_month = int(timeSheet.dataSheet.month)+1 if timeSheet.dataSheet.month < 12 else 1
-    next_year = int(timeSheet.dataSheet.year) if timeSheet.dataSheet.month < 12 else int(timeSheet.dataSheet.year)+1
-    TimeSheet.objects.create(dates=create_dates(Department.objects.get(foreman=request.user.pk).pk, next_month, next_year),
+    if status == 'close' and pre_status != 'opened':
+        next_month = int(timeSheet.dataSheet.month)+1 if timeSheet.dataSheet.month < 12 else 1
+        next_year = int(timeSheet.dataSheet.year) if timeSheet.dataSheet.month < 12 else int(timeSheet.dataSheet.year)+1
+        TimeSheet.objects.create(dates=create_dates(Department.objects.get(foreman=request.user.pk).pk, next_month, next_year),
                              dataSheet=timeSheet.dataSheet.replace(month=next_month, year=next_year),
                              foreman=timeSheet.foreman,
                              department=timeSheet.department)
-    return redirect('/salary/timesheet/')
+        return redirect('/salary/timesheet/')
+    elif pre_status == 'opened':
+        return redirect('/')
+    else:
+        date = dt.datetime.now()
+        return redirect('/salary/payroll/{}'.format(date.strftime("%Y-%m-%d")))
 
 
 class LoadTimeSheetByTime(LoginRequiredMixin, TemplateView):
@@ -225,8 +237,14 @@ class LoadTimeSheet(LoginRequiredMixin, TemplateView):
                                      foreman='{} {}'.format(self.request.user.last_name, self.request.user.first_name),
                                      department=Department.objects.get(foreman=self.request.user.pk))
 
-        dat = TimeSheet.objects.filter(department=Department.objects.get(foreman=self.request.user.pk),
+        user_depart = Department.objects.get(foreman=self.request.user.pk)
+        if len(TimeSheet.objects.filter(Q(department=user_depart.pk, status='open') | Q(department=user_depart.pk, status='opened'))) == 1:
+            dat = TimeSheet.objects.filter(department=Department.objects.get(foreman=self.request.user.pk),
                                        status='open').last()
+        else:
+            dat = TimeSheet.objects.filter(department=Department.objects.get(foreman=self.request.user.pk),
+                                           status='opened').last()
+
 
         context['calendar'] = create_calendar(calendar.mdays[dat.dataSheet.month], dat.dataSheet.month, dat.dataSheet.year)
         context['months'] = ['Январь', 'Февраль', 'Март', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь',
@@ -239,7 +257,7 @@ class LoadTimeSheet(LoginRequiredMixin, TemplateView):
         context['current_department'] = Department.objects.get(foreman=self.request.user.pk)
         context['errors'] = ''
 
-        if dat.status == 'open':
+        if dat.status == 'open' or dat.status == 'opened':
             context['workers'] = Worker.objects.filter(department=depart.id).order_by('-position')
         else:
             arr_workers = [x for x in json.loads(dat.dates)]
@@ -386,7 +404,14 @@ class PayRoll(LoginRequiredMixin, ListView):
             Coefficient.objects.create(count=busy_days()*8,
                                        date_create=dt.date(year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
                                                            month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
-                                                           day=1))
+                                                           day=1),
+                                       status='worker')
+            Coefficient.objects.create(count=240,
+                                       date_create=dt.date(
+                                           year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
+                                           month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
+                                           day=1),
+                                       status='guard')
         for time_sheet in get_all_time_sheets:
             if (not Payroll.objects.filter(department=time_sheet.department,
                                            time_sheet__dataSheet__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
@@ -418,8 +443,13 @@ class PayRoll(LoginRequiredMixin, ListView):
                                     time_sheet__department__manufacture__director=self.request.user.pk)])
         context['group'] = Group.objects.get(user=self.request.user.pk)
         try:
-            context['coefficient'] = Coefficient.objects.get(date_create__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
-                                                        date_create__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month)
+            context['coefficient_worker'] = Coefficient.objects.get(date_create__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
+                                                        date_create__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
+                                                        status='worker')
+            context['coefficient_guard'] = Coefficient.objects.get(
+                date_create__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
+                date_create__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
+            status='guard')
         except:
             pass
         context['positions'] = Position.objects.all()

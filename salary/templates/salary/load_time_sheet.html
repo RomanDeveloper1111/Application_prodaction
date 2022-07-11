@@ -30,6 +30,11 @@
 
 <div class="col-12 p-3" style="overflow: auto;">
 
+    {% if current_time_list.status == 'opened' %}
+        <div class="d-flex justify-content-center"><p class="text-danger">Внимание, табель был возвращен начальником производства для изменения данных!</p></div>
+    {% endif %}
+
+    {% if current_time_list.status != 'opened' %}
     <div style="justify-content: center;
     display: flex;">
         <select style="" id="select_year" class="select-group"
@@ -69,7 +74,7 @@
 
         </select>
     </div>
-
+    {% endif %}
     <style>
         select {
             border-radius: 5px;
@@ -175,13 +180,14 @@
         </tbody>
     </table>
     {% if group.name == 'Бригадира' or group.name == 'Администрация'   %}
-        {% if current_time_list.status == 'open' %}
-        <a class="btn btn-primary" href="{% url 'salary:update-status' current_time_list.pk %}">Отправить Начальнику Производства</a>
+        {% if current_time_list.status == 'open' or  current_time_list.status == 'opened'%}
+        <a class="btn btn-primary" href="{% url 'salary:update-status' current_time_list.pk 'close' %}">Отправить Начальнику Производства</a>
         <a class="btn btn-success" href="{% url 'salary:add-worker' %}">Добавить работника</a>
         {% endif %}
     {% endif %}
     {% if group.name == 'Начальники производства' or group.name == 'Администрация'  %}
-        <a class="btn btn-secondary" href="{% url 'salary:payroll' current_date %}">Открыть рассчетный лист</a>
+        <a class="btn btn-secondary" href="{% url 'salary:payroll' current_time_list.dataSheet %}">Открыть рассчетный лист</a>
+        <a href="{% url 'salary:update-status' current_time_list.pk 'opened' %}" class="btn btn-primary">Вернуть табель</a>
     {% endif %}
 </div>
 

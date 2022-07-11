@@ -20,6 +20,7 @@ def create_dates(depart, get_month, get_year):
                                                                  {'extra_from_director': 0.00}, {'prepayment': 0.00},
                                                                  {'card': 0.00}, {}, {'breakfast': 0.00},
                                                                  {'other': 0.00}, {'norm_clocks': norm_clocks},
+                                                                 {'salary': 0.00},
 
                                                                  ]]
         summ = 0
@@ -52,7 +53,7 @@ def add_worker(dictionary, worker):
                                                                     {'extra_from_director': 0.00}, {'prepayment': 0.00},
                                                                     {'card': 0.00}, {}, {'breakfast': 0.00},
                                                                     {'other': 0.00}, {'norm_clocks': norm_clocks},
-
+                                                                    {'salary': 0.00},
                                                                     ]]
 
     summ = 0

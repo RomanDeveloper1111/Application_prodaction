@@ -33,8 +33,8 @@ class DepartmentAdmin(admin.ModelAdmin):
 
 
 class CoefficientAdmin(admin.ModelAdmin):
-    list_display = ('count', 'date_create')
-    list_display_links = ('count', 'date_create')
+    list_display = ('count', 'date_create', 'status')
+    list_display_links = ('count', 'date_create', 'status')
 
 
 class ManufactureAdmin(admin.ModelAdmin):
