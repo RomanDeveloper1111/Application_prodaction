@@ -363,15 +363,18 @@ $(document).ready(function(){
         kitchen = Number(parent.children[11].children[0].children[0].value);
         other = Number(parent.children[12].children[0].children[0].value);
         fines = Number(parent.children[13].children[0].children[0].value);
-        avans = Number(parent.children[9].children[0].children[0].value)
+        avans = Number(parent.children[9].children[0].children[0].value);
 
         if (parent.children[2].children[0].children[0].value !== 'Охранник'){
             full_time = Number(document.getElementById('full_time_worker').value);
-            parent.children[8].children[0].children[0].value =
+        }
+        else {
+            full_time = Number(document.getElementById('full_time_guard').value);
+        }
+        parent.children[8].children[0].children[0].value =
                 Number((salary/full_time*sumclocks)*1*coefficient+extra_from_foreman+extra_from_director).toFixed(2);
             parent.children[14].children[0].children[0].value =
-                Number(prepayment - (avans + cart + kitchen + other + fines)).toFixed(2);
-        }
+                Number(parent.children[8].children[0].children[0].value - (avans + cart + kitchen + other + fines)).toFixed(2);
     }
 
     all_selectors = document.getElementsByClassName('selector');
