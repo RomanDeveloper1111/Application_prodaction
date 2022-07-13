@@ -25,7 +25,7 @@ const EVENT_HIDE = `hide${EVENT_KEY}`;
 const EVENT_HIDDEN = `hidden${EVENT_KEY}`;
 const EVENT_INSERTED = `inserted${EVENT_KEY}`;
 
-const SELECTOR_DATA_TOGGLE = '[data-mdb-toggle="popover"]';
+const SELECTOR_DATA_TOGGLE = '[data-MDB-toggle="popover"]';
 
 class Popover extends BSPopover {
   constructor(element, data) {

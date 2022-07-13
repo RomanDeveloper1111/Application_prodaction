@@ -14,7 +14,7 @@ const NAME = 'dropdown';
 const DATA_KEY = `mdb.${NAME}`;
 const EVENT_KEY = `.${DATA_KEY}`;
 
-const SELECTOR_EXPAND = '[data-mdb-toggle="dropdown"]';
+const SELECTOR_EXPAND = '[data-MDB-toggle="dropdown"]';
 
 const Default = {
   offset: [0, 2],
@@ -192,7 +192,7 @@ class Dropdown extends BSDropdown {
 
       this._menuStyle = this._menu.style.cssText;
       this._popperPlacement = this._menu.getAttribute('data-popper-placement');
-      this._mdbPopperConfig = this._menu.getAttribute('data-mdb-popper');
+      this._mdbPopperConfig = this._menu.getAttribute('data-MDB-popper');
     });
   }
 
@@ -212,7 +212,7 @@ class Dropdown extends BSDropdown {
       }
 
       this._menu.setAttribute('data-popper-placement', this._popperPlacement);
-      this._menu.setAttribute('data-mdb-popper', this._mdbPopperConfig);
+      this._menu.setAttribute('data-MDB-popper', this._mdbPopperConfig);
 
       this._dropdownAnimationStart('hide');
     });

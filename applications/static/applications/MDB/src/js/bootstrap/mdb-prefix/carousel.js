@@ -88,9 +88,9 @@ const SELECTOR_ITEM = '.carousel-item';
 const SELECTOR_ITEM_IMG = '.carousel-item img';
 const SELECTOR_NEXT_PREV = '.carousel-item-next, .carousel-item-prev';
 const SELECTOR_INDICATORS = '.carousel-indicators';
-const SELECTOR_INDICATOR = '[data-mdb-target]';
-const SELECTOR_DATA_SLIDE = '[data-mdb-slide], [data-mdb-slide-to]';
-const SELECTOR_DATA_RIDE = '[data-mdb-ride="carousel"]';
+const SELECTOR_INDICATOR = '[data-MDB-target]';
+const SELECTOR_DATA_SLIDE = '[data-MDB-slide], [data-MDB-slide-to]';
+const SELECTOR_DATA_RIDE = '[data-MDB-ride="carousel"]';
 
 const POINTER_TYPE_TOUCH = 'touch';
 const POINTER_TYPE_PEN = 'pen';
@@ -384,7 +384,7 @@ class Carousel extends BaseComponent {
 
       for (let i = 0; i < indicators.length; i++) {
         if (
-          Number.parseInt(indicators[i].getAttribute('data-mdb-slide-to'), 10) ===
+          Number.parseInt(indicators[i].getAttribute('data-MDB-slide-to'), 10) ===
           this._getItemIndex(element)
         ) {
           indicators[i].classList.add(CLASS_NAME_ACTIVE);
@@ -403,7 +403,7 @@ class Carousel extends BaseComponent {
       return;
     }
 
-    const elementInterval = Number.parseInt(element.getAttribute('data-mdb-interval'), 10);
+    const elementInterval = Number.parseInt(element.getAttribute('data-MDB-interval'), 10);
 
     if (elementInterval) {
       this._config.defaultInterval = this._config.defaultInterval || this._config.interval;
@@ -570,7 +570,7 @@ class Carousel extends BaseComponent {
       ...Manipulator.getDataAttributes(target),
       ...Manipulator.getDataAttributes(this),
     };
-    const slideIndex = this.getAttribute('data-mdb-slide-to');
+    const slideIndex = this.getAttribute('data-MDB-slide-to');
 
     if (slideIndex) {
       config.interval = false;

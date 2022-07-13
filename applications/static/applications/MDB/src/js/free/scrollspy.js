@@ -23,7 +23,7 @@ const CLASS_COLLAPSIBLE = 'collapsible-scrollspy';
 const CLASS_ACTIVE = 'active';
 
 const SELECTOR_LIST = 'ul';
-const SELECTOR_DATA_SPY = '[data-mdb-spy="scroll"]';
+const SELECTOR_DATA_SPY = '[data-MDB-spy="scroll"]';
 const SELECTOR_ACTIVE = `.${CLASS_ACTIVE}`;
 const SELECTOR_COLLAPSIBLE_SCROLLSPY = `.${CLASS_COLLAPSIBLE}`;
 

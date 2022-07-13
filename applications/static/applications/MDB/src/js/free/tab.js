@@ -32,7 +32,7 @@ const SELECTOR_ACTIVE = '.active';
 const SELECTOR_ACTIVE_UL = ':scope > li > .active';
 
 const SELECTOR_DATA_TOGGLE =
-  '[data-mdb-toggle="tab"], [data-mdb-toggle="pill"], [data-mdb-toggle="list"]';
+  '[data-MDB-toggle="tab"], [data-MDB-toggle="pill"], [data-MDB-toggle="list"]';
 
 class Tab extends BSTab {
   constructor(element) {

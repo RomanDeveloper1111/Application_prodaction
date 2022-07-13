@@ -21,7 +21,7 @@ const DATA_KEY = 'bs.alert';
 const EVENT_KEY = `.${DATA_KEY}`;
 const DATA_API_KEY = '.data-api';
 
-const SELECTOR_DISMISS = '[data-mdb-dismiss="alert"]';
+const SELECTOR_DISMISS = '[data-MDB-dismiss="alert"]';
 
 const EVENT_CLOSE = `close${EVENT_KEY}`;
 const EVENT_CLOSED = `closed${EVENT_KEY}`;

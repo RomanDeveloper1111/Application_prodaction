@@ -25,7 +25,7 @@ const EVENT_HIDDEN = `hidden${EVENT_KEY}`;
 const EVENT_SHOW = `show${EVENT_KEY}`;
 const EVENT_SHOWN = `shown${EVENT_KEY}`;
 
-const SELECTOR_DATA_TOGGLE = '[data-mdb-toggle="modal"]';
+const SELECTOR_DATA_TOGGLE = '[data-MDB-toggle="modal"]';
 
 class Modal extends BSModal {
   constructor(element, data) {

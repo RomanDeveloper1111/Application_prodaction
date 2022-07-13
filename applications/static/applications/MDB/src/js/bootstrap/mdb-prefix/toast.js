@@ -48,7 +48,7 @@ const Default = {
   delay: 5000,
 };
 
-const SELECTOR_DATA_DISMISS = '[data-mdb-dismiss="toast"]';
+const SELECTOR_DATA_DISMISS = '[data-MDB-dismiss="toast"]';
 
 /**
  * ------------------------------------------------------------------------

@@ -12,7 +12,7 @@ import 'detect-autofill';
  */
 
 const NAME = 'input';
-const DATA_KEY = 'mdb.input';
+const DATA_KEY = 'MDB.input';
 const CLASSNAME_WRAPPER = 'form-outline';
 const CLASSNAME_ACTIVE = 'active';
 const CLASSNAME_NOTCH = 'form-notch';

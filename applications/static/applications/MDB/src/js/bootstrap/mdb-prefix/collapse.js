@@ -55,7 +55,7 @@ const WIDTH = 'width';
 const HEIGHT = 'height';
 
 const SELECTOR_ACTIVES = '.show, .collapsing';
-const SELECTOR_DATA_TOGGLE = '[data-mdb-toggle="collapse"]';
+const SELECTOR_DATA_TOGGLE = '[data-MDB-toggle="collapse"]';
 
 /**
  * ------------------------------------------------------------------------
@@ -131,7 +131,7 @@ class Collapse extends BaseComponent {
     if (this._parent) {
       actives = SelectorEngine.find(SELECTOR_ACTIVES, this._parent).filter((elem) => {
         if (typeof this._config.parent === 'string') {
-          return elem.getAttribute('data-mdb-parent') === this._config.parent;
+          return elem.getAttribute('data-MDB-parent') === this._config.parent;
         }
 
         return elem.classList.contains(CLASS_NAME_COLLAPSE);

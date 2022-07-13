@@ -36,7 +36,7 @@ const getUID = (prefix) => {
 };
 
 const getSelector = (element) => {
-  let selector = element.getAttribute('data-mdb-target');
+  let selector = element.getAttribute('data-MDB-target');
 
   if (!selector || selector === '#') {
     const hrefAttr = element.getAttribute('href');
@@ -178,7 +178,7 @@ const reflow = (element) => element.offsetHeight;
 const getjQuery = () => {
   const { jQuery } = window;
 
-  if (jQuery && !document.body.hasAttribute('data-mdb-no-jquery')) {
+  if (jQuery && !document.body.hasAttribute('data-MDB-no-jquery')) {
     return jQuery;
   }
 

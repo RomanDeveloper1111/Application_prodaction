@@ -23,7 +23,7 @@ const CLASS_NAME_ACTIVE = 'active';
 const CLASS_NAME_SHOWN = 'shown';
 const CLASS_NAME_FIXED_ACTION_BTN = 'fixed-action-btn';
 
-const SELECTOR_BUTTON = '[data-mdb-toggle="button"]';
+const SELECTOR_BUTTON = '[data-MDB-toggle="button"]';
 const SELECTOR_FIXED_CONTAINER = '.fixed-action-btn';
 const SELECTOR_ACTION_BUTTON = '.fixed-action-btn:not(.smooth-scroll) > .btn-floating';
 const SELECTOR_LIST_ELEMENT = 'ul .btn';

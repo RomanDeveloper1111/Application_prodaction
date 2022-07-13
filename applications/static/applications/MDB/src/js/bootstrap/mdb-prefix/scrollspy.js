@@ -47,7 +47,7 @@ const EVENT_LOAD_DATA_API = `load${EVENT_KEY}${DATA_API_KEY}`;
 const CLASS_NAME_DROPDOWN_ITEM = 'dropdown-item';
 const CLASS_NAME_ACTIVE = 'active';
 
-const SELECTOR_DATA_SPY = '[data-mdb-spy="scroll"]';
+const SELECTOR_DATA_SPY = '[data-MDB-spy="scroll"]';
 const SELECTOR_NAV_LIST_GROUP = '.nav, .list-group';
 const SELECTOR_NAV_LINKS = '.nav-link';
 const SELECTOR_NAV_ITEMS = '.nav-item';

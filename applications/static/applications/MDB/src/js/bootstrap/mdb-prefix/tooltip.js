@@ -422,7 +422,7 @@ class Tooltip extends BaseComponent {
   }
 
   getTitle() {
-    let title = this._element.getAttribute('data-mdb-original-title');
+    let title = this._element.getAttribute('data-MDB-original-title');
 
     if (!title) {
       title =
@@ -587,10 +587,10 @@ class Tooltip extends BaseComponent {
 
   _fixTitle() {
     const title = this._element.getAttribute('title');
-    const originalTitleType = typeof this._element.getAttribute('data-mdb-original-title');
+    const originalTitleType = typeof this._element.getAttribute('data-MDB-original-title');
 
     if (title || originalTitleType !== 'string') {
-      this._element.setAttribute('data-mdb-original-title', title || '');
+      this._element.setAttribute('data-MDB-original-title', title || '');
       if (title && !this._element.getAttribute('aria-label') && !this._element.textContent) {
         this._element.setAttribute('aria-label', title);
       }

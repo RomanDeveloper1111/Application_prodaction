@@ -25,7 +25,7 @@ const EVENT_SHOW = `show${EVENT_KEY}`;
 const EVENT_SHOWN = `shown${EVENT_KEY}`;
 const EVENT_INSERTED = `inserted${EVENT_KEY}`;
 
-const SELECTOR_DATA_TOGGLE = '[data-mdb-toggle="tooltip"]';
+const SELECTOR_DATA_TOGGLE = '[data-MDB-toggle="tooltip"]';
 
 class Tooltip extends BSTooltip {
   constructor(element, data) {

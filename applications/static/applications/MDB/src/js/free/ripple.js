@@ -11,7 +11,7 @@ import SelectorEngine from '../mdb/dom/selector-engine';
  */
 
 const NAME = 'ripple';
-const DATA_KEY = 'mdb.ripple';
+const DATA_KEY = 'MDB.ripple';
 const CLASSNAME_RIPPLE = 'ripple-surface';
 const CLASSNAME_RIPPLE_WAVE = 'ripple-wave';
 const SELECTOR_COMPONENT = ['.btn', '.ripple'];

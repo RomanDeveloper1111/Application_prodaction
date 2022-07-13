@@ -11,7 +11,7 @@ import SelectorEngine from '../mdb/dom/selector-engine';
  */
 
 const NAME = 'range';
-const DATA_KEY = 'mdb.range';
+const DATA_KEY = 'MDB.range';
 const CLASSNAME_THUMB = 'thumb';
 const CLASSNAME_WRAPPER = 'range';
 const CLASSNAME_ACTIVE = 'thumb-active';

@@ -70,8 +70,8 @@ const CLASS_NAME_STATIC = 'modal-static';
 
 const SELECTOR_DIALOG = '.modal-dialog';
 const SELECTOR_MODAL_BODY = '.modal-body';
-const SELECTOR_DATA_TOGGLE = '[data-mdb-toggle="modal"]';
-const SELECTOR_DATA_DISMISS = '[data-mdb-dismiss="modal"]';
+const SELECTOR_DATA_TOGGLE = '[data-MDB-toggle="modal"]';
+const SELECTOR_DATA_DISMISS = '[data-MDB-dismiss="modal"]';
 
 /**
  * ------------------------------------------------------------------------

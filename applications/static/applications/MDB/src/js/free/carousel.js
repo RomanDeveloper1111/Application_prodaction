@@ -20,7 +20,7 @@ const EVENT_SLID_BS = 'slid.bs.carousel';
 const EVENT_SLIDE = `slide${EVENT_KEY}`;
 const EVENT_SLID = `slid${EVENT_KEY}`;
 
-const SELECTOR_DATA_RIDE = '[data-mdb-ride="carousel"]';
+const SELECTOR_DATA_RIDE = '[data-MDB-ride="carousel"]';
 
 class Carousel extends BSCarousel {
   constructor(element, data) {

@@ -38,7 +38,7 @@ const SELECTOR_NAV_LIST_GROUP = '.nav, .list-group';
 const SELECTOR_ACTIVE = '.active';
 const SELECTOR_ACTIVE_UL = ':scope > li > .active';
 const SELECTOR_DATA_TOGGLE =
-  '[data-mdb-toggle="tab"], [data-mdb-toggle="pill"], [data-mdb-toggle="list"]';
+  '[data-MDB-toggle="tab"], [data-MDB-toggle="pill"], [data-MDB-toggle="list"]';
 const SELECTOR_DROPDOWN_TOGGLE = '.dropdown-toggle';
 const SELECTOR_DROPDOWN_ACTIVE_CHILD = ':scope > .dropdown-menu .active';
 
