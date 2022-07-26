@@ -194,7 +194,7 @@ class LoadTimeSheetByTime(LoginRequiredMixin, TemplateView):
             dates[str(worker)][3][1]['extra_from_foreman'] = value
 
         for n in dates[str(worker)][1]:
-            count += int(dates[str(worker)][1][str(n)][0]['count'])
+            count += float(dates[str(worker)][1][str(n)][0]['count'])
 
         dates[str(worker)][2]['sumclocks'] = str(count)
         if self.request.POST['status'] != '':
@@ -287,7 +287,7 @@ class LoadTimeSheet(LoginRequiredMixin, TemplateView):
             dates[str(worker)][3][1]['extra_from_foreman'] = value
 
         for n in dates[str(worker)][1]:
-            count += int(dates[str(worker)][1][str(n)][0]['count'])
+            count += float(dates[str(worker)][1][str(n)][0]['count'])
 
         dates[str(worker)][2]['sumclocks'] = str(count)
         if self.request.POST['status'] != '':
@@ -436,11 +436,11 @@ class PayRoll(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['errors'] = Department.objects.filter(pk__in=[pay_dep.department.pk for pay_dep in Payroll.objects.filter(
-                                    time_sheet__dataSheet__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
-                                    time_sheet__dataSheet__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
-                                    time_sheet__status='open',
-                                    time_sheet__department__manufacture__director=self.request.user.pk)])
+        context['errors'] = Department.objects.filter(pk__in=[pay_dep.department.pk for pay_dep in TimeSheet.objects.filter(
+                                    dataSheet__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
+                                    dataSheet__month=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").month,
+                                    status='open',
+                                    department__manufacture__director=self.request.user.pk)])
         context['group'] = Group.objects.get(user=self.request.user.pk)
         try:
             context['coefficient_worker'] = Coefficient.objects.get(date_create__year=dt.datetime.strptime(self.kwargs['request_date'], "%Y-%m-%d").year,
