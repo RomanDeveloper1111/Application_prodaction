@@ -14,21 +14,26 @@ from .pylibs.time_sheet import create_dates, delete_worker
 import calendar
 from .forms import *
 import os
-from django.core.files import File
-import pandas as pd
+import xlsxwriter
 
 
 class GetFile(APIView):
     def post(self, request, format=None):
+        workbook = xlsxwriter.Workbook('avans.xlsx')
+        bold = workbook.add_format({'bold': True})
+        # создаем там "лист"
+        worksheet = workbook.add_worksheet()
+        worksheet.write('A1', 'ФИО', bold)
+        worksheet.write('B1', 'Зарплата', bold)
+        worksheet.write('C1', 'Аванс', bold)
+        worksheet.write('D1', 'Выдача', bold)
+        for i in range(0, len(request.data['FIO'])):
+            worksheet.write(f'A{str(i+2)}', request.data['FIO'][i])
+            worksheet.write(f'B{str(i+2)}', request.data['ZP'][i])
+            worksheet.write(f'C{str(i+2)}', request.data['AVANS'][i])
+            worksheet.write(f'D{str(i+2)}', request.data['Salary'][i])
 
-        df = pd.DataFrame({'ФИО': request.data['FIO'],
-                           'Зарплата': request.data['ZP'],
-                           'Аванс': request.data['AVANS'],
-                           'Выдача': request.data['Salary'],
-
-                       })
-
-        df.to_excel('./avans.xlsx', index=False)
+        workbook.close()
 
         return redirect('/salary/download_file/')
 
