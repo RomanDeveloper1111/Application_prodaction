@@ -5,7 +5,7 @@ Jinja2
 django-jinja
 djangorestframework
 numpy==1.21.2
-pandas
+pandas==1.2
 openpyxl
 xlsxwriter
 xlrd
