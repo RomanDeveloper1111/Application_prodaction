@@ -40,7 +40,7 @@ class AddNewWorker(forms.ModelForm):
 class UpdateDepartForm(forms.ModelForm):
     foreman = forms.ModelChoiceField(queryset=User.objects.
                                      filter(pk__in=Group.objects.values_list('user').filter(name='Бригадира')),
-                                     label='Бригадир', to_field_name='pk')
+                                     label='Бригадир', to_field_name='pk',)
     manufacture = forms.ModelChoiceField(queryset=Manufacture.objects.all(), required=False, label='Производство',
                                          widget=forms.widgets.Select(attrs={'disabled': True}), to_field_name='pk')
 

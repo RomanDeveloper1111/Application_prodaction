@@ -1,6 +1,6 @@
 import datetime as dt
 import json
-
+import codecs
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
@@ -13,6 +13,34 @@ from .pylibs.bussy_days import busy_days, create_calendar
 from .pylibs.time_sheet import create_dates, delete_worker
 import calendar
 from .forms import *
+import os
+from django.core.files import File
+import pandas as pd
+
+
+class GetFile(APIView):
+    def post(self, request, format=None):
+
+        df = pd.DataFrame({'ФИО': request.data['FIO'],
+                           'Зарплата': request.data['ZP'],
+                           'Аванс': request.data['AVANS'],
+                           'Выдача': request.data['Salary'],
+
+                       })
+
+        df.to_excel('./avans.xlsx', index=False)
+
+        return redirect('/salary/download_file/')
+
+
+def download_file(request):
+
+    path_to_file = os.path.relpath('avans.xlsx')
+    with open(path_to_file, 'rb') as model_excel:
+        result = model_excel.read()
+        response = HttpResponse(result)
+        response['Content-Disposition'] = 'attachment; filename=avans.xlsx'
+    return response
 
 
 class MoveWorker(APIView):
@@ -472,6 +500,8 @@ class ListPositions(LoginRequiredMixin, ListView):
     template_name = 'salary/positions.html'
     model = Position
     context_object_name = 'positions'
+
+
 
 
 class CreatePosition(LoginRequiredMixin, CreateView):

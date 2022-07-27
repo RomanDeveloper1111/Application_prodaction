@@ -297,8 +297,9 @@
 {% endif %}
 <div class="col-3">
     <div class="row" style="display: flex;">
-        <div class="col-6">
-            <a href="{% url 'salary:positions' %}" class="btn btn-secondary">Должности</a>
+        <div class=" d-grid gap-2 col-6 ">
+            <a href="{% url 'salary:positions' %}" style="padding: 25px;" class="btn btn-secondary btn-sm">Должности</a>
+            <a onclick="get_file()" style="padding: 25px;" class="btn btn-primary btn-sm mt-2">Выгрузка EXCEL</a>
         </div>
 
         <div class="col-6">
@@ -370,9 +371,13 @@ $(document).ready(function(){
         }
         else {
             full_time = Number(document.getElementById('full_time_guard').value);
+            if (sumclocks > full_time){
+                sumclocks = full_time
+            }
+
         }
-        parent.children[8].children[0].children[0].value =
-                Number((salary/full_time*sumclocks)*1*coefficient+extra_from_foreman+extra_from_director).toFixed(2);
+            parent.children[8].children[0].children[0].value =
+                Number((salary/full_time*sumclocks)*coefficient+extra_from_foreman+extra_from_director).toFixed(2);
             parent.children[14].children[0].children[0].value =
                 Number(parent.children[8].children[0].children[0].value - (avans + cart + kitchen + other + fines)).toFixed(2);
     }
@@ -452,6 +457,41 @@ $(document).ready(function(){
 
     })
 
+
+    function get_file(){
+        let table = document.querySelectorAll('.table-sm tbody tr');
+
+        const all_data = new Map();
+        all_data.set('ФИО', []);
+        all_data.set('Аванс', []);
+        all_data.set('Зарплата', []);
+        all_data.set('Выдача', []);
+        for (var i=0; i < table.length; i++){
+            if (table[i].children[1]){
+                all_data.get('ФИО').push(table[i].children[1].children[0].children[0].value)
+                all_data.get('Аванс').push(table[i].children[9].children[0].children[0].value)
+                all_data.get('Зарплата').push(table[i].children[8].children[0].children[0].value)
+                all_data.get('Выдача').push(table[i].children[14].children[0].children[0].value)
+            }
+        }
+
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+                    'FIO': all_data.get('ФИО'),
+                    'AVANS': all_data.get('Аванс'),
+                    'ZP': all_data.get('Зарплата'),
+                    'Salary': all_data.get('Выдача')
+
+          }),};
+      fetch('/salary/get_file/', requestOptions)
+          .then(() => {
+              window.open('/salary/download_file/');
+      })
+
+        console.log(all_data);
+    }
 
 </script>
 {% endblock %}

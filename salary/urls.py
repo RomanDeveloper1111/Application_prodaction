@@ -38,4 +38,8 @@ urlpatterns = [
     path('departments/', ListDepartments.as_view(), name='departments'),
     path('departments/<int:pk>', UpdateDepartment.as_view(), name='update-depart'),
     path('department-create', CreateDepartment.as_view(), name='create-depart'),
+
+    path('get_file/', GetFile.as_view(), name='get_file'),
+    path('download_file/', download_file, name='download_file'),
+
 ]
